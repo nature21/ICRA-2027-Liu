@@ -1,0 +1,85 @@
+% basic
+\usepackage{color,xcolor}
+\usepackage{epsfig}
+\usepackage{graphicx}
+
+% figure and table
+\usepackage{adjustbox}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{colortbl}
+\usepackage{wrapfig}
+\usepackage{hhline}
+\usepackage{multirow}
+\usepackage{subcaption} % issues a warning with CVPR/ICCV format
+\usepackage[skip=1pt,labelfont=bf,font=footnotesize]{caption}
+\usepackage{wrapfig}
+\usepackage{floatflt}
+
+% font and character
+% \usepackage{txfonts}
+\let\proof\relax
+\let\endproof\relax
+\usepackage{amsmath,amsfonts,amssymb,amsthm}
+\usepackage{mathtools}  % additional useful math commands, such as \coloneqq
+\usepackage{bm}
+% \usepackage{bbold}  % special blackboard bold characters (e.g., 1)
+\usepackage{nicefrac}
+\usepackage{microtype}
+\usepackage{times} % assumes new font selection scheme installed
+\usepackage{mathptmx} % assumes new font selection scheme installed
+
+% layout
+\usepackage{changepage}
+\usepackage{extramarks}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{setspace}
+\usepackage{soul}
+\usepackage{xspace}
+
+% ref
+\usepackage[pagebackref=true,breaklinks=true,colorlinks,citecolor=gray]{hyperref}
+\newcommand\nnfootnote[1]{%
+  \begin{NoHyper}
+  \renewcommand\thefootnote{}\footnote{#1}%
+  \addtocounter{footnote}{-1}%
+  \end{NoHyper}
+}
+\usepackage{url}
+\definecolor{urlblue}{rgb}{0,0,0.5}
+\hypersetup{urlcolor=urlblue}
+\usepackage[noadjust]{cite}
+
+% misc
+%\usepackage{algorithm, algorithmic}
+\usepackage{enumerate}
+\usepackage{todonotes} % conflict with CVPR/ICCV format
+\let\labelindent\relax
+\usepackage{enumitem}  % control indent of enumerate, itemize, etc.
+
+\usepackage{titlesec}
+
+%\usepackage{fourier} 
+\usepackage{makecell}
+
+\usepackage{pifont} % for extra symbols such as \cmark
+% \usepackage{subcaption}
+
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+% \usepackage{algorithm}
+% \usepackage{algorithmic}
+\urlstyle{same}
+
+% shaded
+\usepackage{framed}
+\definecolor{shadecolor}{gray}{0.95}
+
+\usepackage{xparse}
+\usepackage{etoolbox}
+
+% for \texttt
+\usepackage{courier}
