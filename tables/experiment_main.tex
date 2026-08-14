@@ -1,0 +1,62 @@
+% Previous layout (methods as rows and skeletons as columns):
+% \resizebox{\textwidth}{!}{%
+% \begin{tabular}{@{}l*{8}{c}@{}}
+%     \toprule
+%     \textbf{Task}
+%         & \multicolumn{3}{c}{\textbf{Store Box}}
+%         & \multicolumn{3}{c}{\textbf{Grasp Box}}
+%         & \multicolumn{2}{c}{\textbf{Pick up Book}} \\
+%     \cmidrule(lr){2-4}\cmidrule(lr){5-7}\cmidrule(l){8-9}
+%     \textbf{Skeleton}
+%         & push$\rightarrow$push
+%         & press$\rightarrow$flip$\rightarrow$push
+%         & rotate$\rightarrow$push$\rightarrow$push
+%         & push$\rightarrow$flip$\rightarrow$grasp
+%         & push$\rightarrow$flip$\rightarrow$press$\rightarrow$grasp
+%         & press$\rightarrow$push$\rightarrow$flip$\rightarrow$grasp
+%         & tilt$\rightarrow$grasp
+%         & push$\rightarrow$grasp \\
+%     \midrule
+%     $\pi_{0.5}$                           & & & & & & & & \\
+%     RAPID w/o primitive learning          & & & & & & & & \\
+%     RAPID w/o optimization program        & & & & & & & & \\
+%     RAPID w/o goal inferring              & & & & & & & & \\
+%     RAPID w/o relational representation  & & & & & & & & \\
+%     RAPID                                & & & & & & & & \\
+%     \bottomrule
+% \end{tabular}%
+% }
+
+{%
+\small
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.08}
+\begin{adjustbox}{max width=\linewidth}
+\begin{tabular}{@{}ll*{6}{c}@{}}
+    \toprule
+    \textbf{Task}
+        & \textbf{Skeleton}
+        & $\pi_{0.5}$
+        & \textbf{RAPID w/o Prim.}
+        & \textbf{RAPID w/o Optim.}
+        & \textbf{RAPID w/o Goal}
+        & \textbf{RAPID w/o Rel.}
+        & \textbf{RAPID} \\
+    \midrule
+    \multirow{3}{*}{Store Box}
+        & push$\rightarrow$push & -- & -- & -- & -- & -- & -- \\
+        & press$\rightarrow$flip$\rightarrow$push & -- & -- & -- & -- & -- & -- \\
+        & rotate$\rightarrow$push$\rightarrow$push & -- & -- & -- & -- & -- & -- \\
+    \midrule
+    \multirow{3}{*}{Grasp Box}
+        & push$\rightarrow$flip$\rightarrow$grasp & -- & -- & -- & -- & -- & -- \\
+        & push$\rightarrow$flip$\rightarrow$press$\rightarrow$grasp & -- & -- & -- & -- & -- & -- \\
+        & press$\rightarrow$push$\rightarrow$flip$\rightarrow$grasp & -- & -- & -- & -- & -- & -- \\
+    \midrule
+    \multirow{2}{*}{Pick up Book}
+        & tilt$\rightarrow$grasp & -- & -- & -- & -- & -- & -- \\
+        & push$\rightarrow$grasp & -- & -- & -- & -- & -- & -- \\
+    \bottomrule
+\end{tabular}
+\end{adjustbox}
+}
