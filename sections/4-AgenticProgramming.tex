@@ -1,0 +1,64 @@
+\section{Agentic Programming from Demonstration}
+\label{sec:agentic_programming}
+
+In Sec.~\ref{sec:relational_programs}, we introduced a reusable and generalizable representation of relational manipulation programs that can be efficiently instantiated in novel scenes. We now describe how RAPID employs a coding agent to construct and iteratively refine such programs from a single visual human demonstration. Specifically, RAPID closes the agentic loop with the single demonstration by automatically inferring the task specification, generating programs the manipulation primitives referred by the strategy, and reconstructing the interactive simulation environments used for verification.
+
+
+\subsection{Reconstructing Interactive Environments}
+\label{sec:loop_ingredients}
+
+\xhdr{Interactive environment.}
+To verify a manipulation program, RAPID reconstructs an interactive simulation environment from the initial RGB-D frame of the demonstration. We first use a vision-language model (VLM) to identify the objects in the scene, assign them with semantic labels, and estimate their physical properties. Then, for each semantic name, we utilize SAM~3~\cite{carion2026sam} to get a segmentation mask. The RGB-D frame and the mask are then fed into SAM~3D~\cite{chen2026sam} to reconstruct a complete mesh. Finally, we use FoundationPose~\cite{wen2024foundationpose} to register each mesh to the RGB-D frame, and assemble the reconstructed objects and robot model in MuJoCo~\cite{todorov2012mujoco}. The resulting environment preserves the scene entities, geometry, and spatial relations needed to execute the candidate program and evaluate its success predicates.
+
+\xhdr{Feasible scene variants.}
+Verifying a program only in the reconstructed environment from a single demonstration may leave accidental assumptions about the demonstration undetected. To improve reusablity and generalizability, RAPID uses a task-agnostic variation sampler to generate scene variants. This sampler will randomize object appearances, sizes, poses, as well as physical parameters such as mass, friction, and elasticity. However, the randomly sampled scenes might not be feasible for a certain primitive or strategy. Therefore, we will let the coding agent to write a filter to leave out those infeasible variants based on its understanding of the primitive or the strategy. A variant is accepted only if it preserves the declared roles and relations, retains the task meaning, and remains physically feasible. 
+
+\subsection{Primitive Construction}
+\label{sec:primitive_construction}
+To construct the primitives, we first need to decompose the demonstration of the overall tasks into a sequence of interaction phases. Given the full demonstration $D$ and its natural language description $l$, RAPID calls a subagent to partition $D$ into an ordered sequence of interaction segments $(D_1,\ldots,D_K)$ and assigns a local description $l_i$ to each $D_i$. For each $(D_i,l_i)$, if the coding agent recognizes that the behavior is covered by an existing primitive in the primitive library $\mathcal{P}$, we can simply retrieve this primitive. Otherwise, the coding agent will infer a primitive specification consisting of a semantic goal $G_i$ and a success predicate $\Psi_i$ from $(D_i,l_i)$. It further reasons about the contact interactions that produces the demonstrated effect, the relational structure that should remain invariant across executions, and the quantities that might vary between invocations. For example, for the flipping primitive in Table~\ref{tab:flip_primitive}, the demonstrated rotation supplies the flipping-angle argument, while the required relations among the target, support, fixture, and pusher define the reusable interaction structure.
+
+Given the inferred primitive specification and the analysis about physical interaction structure, the coding agent will generate the relational primitive contract $C_i$, geometry resolver $\rho_i$, and optimization cost $J_i$ introduced in Sec.~\ref{sec:relational_primitives}. RAPID then iteratively verifies and revises the resulting primitive in the reconstructed interactive environment $\widehat{E}_i$ as well as in automatically generated scene variants. The complete process is illustrated in Algorithm~\ref{alg:agentic_programming}: RAPID reconstructs the segment-level environment $\widehat{E}_i$, proposes a primitive program $P_i$, generates feasible scene variants, and revises the program until the success predicate $\Psi_i$ is satisfied across the verification set $\mathcal{V}_i$. Finally, the primitive is added to the library $\mathcal{P}$.
+
+\subsection{Strategy Composition}
+\label{sec:program_revision}
+
+After constructing the required primitives, RAPID composes them into a task-level strategy. Given the full demonstration $D$ and instruction $l$, the coding agent infers a strategy specification consisting of the overall task goal $G_\Pi$ and final success predicate $\Psi_\Pi$. The sequence of the interaction segments $(D_1,\ldots,D_K)$ determines the ordering of the primitive composition. The agent then constructs the strategy interface $C_\Pi$ and, for each phase $k$, selects a verified primitive $P_{i_k}$, defines the role map $m_k$, and specifies the connecting constraint $c_k$. Together, these components form an initial version of the strategy $\Pi$. 
+
+RAPID then iteratively verifies and revises the strategy in the reconstructed interactive environment $\widehat{E}_0$ and its feasible scene variants. As illustrated by Algorithm~\ref{alg:agentic_programming}, during each execution, RAPID binds the semantic roles, invokes the selected primitives sequentially, evaluates each connecting constraint just in time, and checks the final outcome with $\Psi_\Pi$. The failure signals are returned to the coding agent, and the coding agent will revise the strategy composition accordingly while keeping the verified primitives fixed, until $\Psi_\Pi$ is satisfied across $\mathcal{V}_\Pi$. 
+
+\begin{algorithm}[t]
+    \caption{RAPID}
+    \label{alg:agentic_programming}
+    \KwIn{Human demonstration $D$, instruction $l$}
+    \KwOut{Verified primitives $\mathcal{P}$ and strategy $\Pi$}
+    $\{(D_i,l_i)\}_{i=1}^{K}\gets\Call{Segment}{D,l}$\;
+    $\mathcal{P}\gets\emptyset$\;
+    \textcolor{black!70}{\textit{// Primitive construction}}\;
+    \For{$i=1,\ldots,K$}{
+        $\widehat{E}_i\gets\Call{Reconstruct}{D_i}$\;
+        $(G_i,\Psi_i)\gets\Call{InferObjective}{D_i,l_i}$\;
+        $g_i\gets\Call{InferEffect}{D_i,G_i}$\;
+        $P_i\gets\Call{ProposePrimitive}{D_i,G_i,\Psi_i,\widehat{E}_i}$\;
+        $\mathcal{V}_i\gets\{\widehat{E}_i\}\cup\Call{Variants}{\widehat{E}_i,P_i}$\;
+        $P_i\gets\Call{VerifyRevise}{P_i,\mathcal{V}_i,(g_i,l_i)}$\;
+        $\mathcal{P}\gets\mathcal{P}\cup\{\Call{Freeze}{P_i}\}$\;
+    }
+    \textcolor{black!70}{\textit{// Strategy composition}}\;
+    $\widehat{E}_0\gets\Call{Reconstruct}{D}$\;
+    $(G_\Pi,\Psi_\Pi)\gets\Call{InferObjective}{D,l}$\;
+    $\Pi\gets\Call{Compose}{D,\mathcal{P},G_\Pi,\Psi_\Pi,\widehat{E}_0}$\;
+    $\mathcal{V}_\Pi\gets\{\widehat{E}_0\}\cup\Call{Variants}{\widehat{E}_0,\Pi}$\;
+    $\Pi\gets\Call{VerifyRevise}{\Pi,\mathcal{V}_\Pi,l}$\;
+    \KwRet{$\mathcal{P},\Call{Freeze}{\Pi}$}\;
+    \textcolor{black!70}{\textit{// Shared verification and revision}}\;
+    \SetKwProg{Fn}{function}{}{}
+    \Fn{\textnormal{\textsc{VerifyRevise}}$(Q,\mathcal{V},a)$}{
+        \Repeat{$\Call{AllSuccessful}{\mathcal{R}}$}{
+            $\mathcal{R}\gets\Call{ExecuteEvaluate}{Q,\mathcal{V},a}$\;
+            \If{$\neg\Call{AllSuccessful}{\mathcal{R}}$}{
+                $Q\gets\Call{DiagnoseRevise}{Q,\mathcal{R}}$\;
+            }
+        }
+        \KwRet{$Q$}\;
+    }
+\end{algorithm}

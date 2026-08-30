@@ -1,0 +1,18 @@
+\section{Problem Statement}
+\label{sec:problem}
+
+We consider programming a reusable \textit{nonprehensile manipulation} strategy from a single visual human demonstration $D$ and a language instruction $l$. The demonstration records a human performing the task in an example scene. The resulting program should solve a family of task variants $\mathcal{E}$ that share the same task objective but may differ in object appearance, geometry, pose, physical properties, and scene configuration.
+
+We assume that no manipulation primitives, explicit success criterion, or instantiated simulation environment are provided a priori. Given only $(D,l)$, the agent must first construct a set of executable manipulation primitives
+\[
+\mathcal{P} = \{P_1,\ldots,P_N\},
+\]
+and then compose these primitives into a strategy $\Pi$. The resulting program should capture the manipulation structure underlying the demonstration and generalize beyond the demonstrated instance:
+\[
+(D,l)
+\longrightarrow
+(\mathcal{P},\Pi),
+\qquad
+\Pi(E;\mathcal{P}) \text{ succeeds for } E \in \mathcal{E}.
+\]
+The goal is to recover reusable primitives and a strategy that can adapt to unseen task variants.

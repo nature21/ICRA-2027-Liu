@@ -1,0 +1,4 @@
+interface:
+  display_name: "Format BibTeX Items"
+  short_description: "Normalize BibTeX entries to project style"
+  default_prompt: "Use $format-bibtex-items to format this BibTeX entry consistently."
