@@ -26,3 +26,5 @@ _minted-*/
 *.swo
 *~
 .DS_Store
+AGENTS.md
+draw_figures

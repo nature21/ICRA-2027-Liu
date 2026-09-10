@@ -1,15 +1,32 @@
 \section{Experiments}
 
-\begin{table*}
+\begin{figure}[t]
+    \centering
+    \fbox{\parbox[c][2in][c]{0.96\linewidth}{
+        \centering
+        \textbf{Experiment Setting Placeholder}
+    }}
+    \caption{Experiment settings.}
+    \label{fig:experiment_setting}
+\end{figure}
+
+\begin{table*}[t]
     \centering
     \caption{Experiment Results}
     \label{tab:experiment_results}
     \input{tables/experiment_main}
 \end{table*}
 
-\begin{table}
+\begin{table}[t]
     \centering
-    \caption{Experiment Results in the Real World}
-    \label{tab:experiment_real}
-    \input{tables/experiment_real_world}
+    \caption{Experiment Results on LIBERO-Pro}
+    \label{tab:libero_pro_results}
+    \input{tables/experiment_libero_pro}
 \end{table}
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\linewidth]{figures/real_world_results.pdf}
+    \caption{Success rates across eight real-world manipulation tasks.}
+    \label{fig:experiment_real}
+\end{figure}
