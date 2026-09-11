@@ -1,20 +1,17 @@
 \section{Relational Manipulation Programs}
 \label{sec:relational_programs}
 
-As shown in Figure~\ref{fig:method_overview}, RAPID uses agentic programming to construct a reusable robot manipulation strategy $\Pi$ given a single visual human demonstration $D$ and its corresponding language instruction $l$. It first infers the task specification from $(D,l)$ and generates an initial object-centric, relational program for accomplishing the task. RAPID then reconstructs an interactive simulation environment from $D$, in which it iteratively executes, verifies, and revises the program. To improve reusability and generalization, RAPID also proposes sevaral scene variants, verifies the program across them, and uses the failures to guide revision. At deployment, the strategy is frozen and can be instantiated in a novel scene through lightweight semantic binding.
-
-In this section, we introduce the object-centric and relational program representation of primitives, how primitives are composed to form a strategy, and  how a strategy is instantiated in novel scenes. We then describe how RAPID constructs and verifies these programs from a single human demonstration in Sec.~\ref{sec:agentic_programming}.
-
-\begin{figure*}[t]
+\begin{figure*}[ht]
     \centering
-    \fbox{\parbox[c][2in][c]{0.96\textwidth}{
-        \centering
-        \textbf{Method Figure Placeholder}\\[3pt]
-    }}
+    \includegraphics[width=\linewidth]{figures/method.pdf}
     \caption{Overview of RAPID. }
     \label{fig:method_overview}
     \vspace{-0.3in}
 \end{figure*}
+
+As shown in Figure~\ref{fig:method_overview}, RAPID uses agentic programming to construct a reusable robot manipulation strategy $\Pi$ given a single visual human demonstration $D$ and its corresponding language instruction $l$. It first infers the task specification from $(D,l)$ and generates an initial object-centric, relational program for accomplishing the task. RAPID then reconstructs an interactive simulation environment from $D$, in which it iteratively executes, verifies, and revises the program. To improve reusability and generalization, RAPID also proposes sevaral scene variants, verifies the program across them, and uses the failures to guide revision. At deployment, the strategy is frozen and can be instantiated in a novel scene through lightweight semantic binding.
+
+In this section, we introduce the object-centric and relational program representation of primitives, how primitives are composed to form a strategy, and  how a strategy is instantiated in novel scenes. We then describe how RAPID constructs and verifies these programs from a single human demonstration in Sec.~\ref{sec:agentic_programming}
 
 
 \subsection{Primitives as Relational Trajectory-Optimization Programs}
