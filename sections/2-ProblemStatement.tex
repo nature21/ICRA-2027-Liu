@@ -1,6 +1,14 @@
 \section{Problem Statement}
 \label{sec:problem}
 
+\begin{figure*}[t]
+    \centering
+    \includegraphics[width=\linewidth]{figures/method.pdf}
+    \caption{Overview of RAPID. }
+    \label{fig:method_overview}
+    \vspace{-0.3in}
+\end{figure*}
+
 We consider programming a reusable \textit{nonprehensile manipulation} strategy from a single visual human demonstration $D$ and a language instruction $l$. The demonstration records a human performing the task in an example scene. The resulting program should solve a family of task variants $\mathcal{E}$ that share the same task objective but may differ in object appearance, geometry, pose, physical properties, and scene configuration.
 
 We assume that no manipulation primitives, explicit success criterion, or instantiated simulation environment are provided a priori. Given only $(D,l)$, the agent must first construct a set of executable manipulation primitives

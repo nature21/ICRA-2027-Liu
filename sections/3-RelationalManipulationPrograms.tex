@@ -1,18 +1,9 @@
 \section{Relational Manipulation Programs}
 \label{sec:relational_programs}
 
-\begin{figure*}[ht]
-    \centering
-    \includegraphics[width=\linewidth]{figures/method.pdf}
-    \caption{Overview of RAPID. }
-    \label{fig:method_overview}
-    \vspace{-0.3in}
-\end{figure*}
-
 As shown in Figure~\ref{fig:method_overview}, RAPID uses agentic programming to construct a reusable robot manipulation strategy $\Pi$ given a single visual human demonstration $D$ and its corresponding language instruction $l$. It first infers the task specification from $(D,l)$ and generates an initial object-centric, relational program for accomplishing the task. RAPID then reconstructs an interactive simulation environment from $D$, in which it iteratively executes, verifies, and revises the program. To improve reusability and generalization, RAPID also proposes sevaral scene variants, verifies the program across them, and uses the failures to guide revision. At deployment, the strategy is frozen and can be instantiated in a novel scene through lightweight semantic binding.
 
 In this section, we introduce the object-centric and relational program representation of primitives, how primitives are composed to form a strategy, and  how a strategy is instantiated in novel scenes. We then describe how RAPID constructs and verifies these programs from a single human demonstration in Sec.~\ref{sec:agentic_programming}
-
 
 \subsection{Primitives as Relational Trajectory-Optimization Programs}
 \label{sec:relational_primitives}
@@ -105,6 +96,12 @@ We solve this trajectory-optimization problem with the Cross-Entropy Method (CEM
 
 \subsection{Strategies as Primitive Composition by Constraints}
 \label{sec:relational_strategy}
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\linewidth]{figures/program.pdf}
+    \caption{Program.}
+\end{figure}
 
 Suppose we have a library of primitives $\mathcal{P}$, where each $P_i \in \mathcal{P}$ realizes an object-level motion effect. A strategy $\Pi$ is a reusable task-level program that composes these primitives to accomplish an overall task. It specifies the sequence of primitives to invoke, how task roles map to each primitive, and how the requested effect of each invocation is determined:
 \begin{equation*}

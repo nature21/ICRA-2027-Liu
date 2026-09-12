@@ -1,0 +1,338 @@
+[
+  {
+    "current_task": 1,
+    "original_task": 1,
+    "rapid_replicate_ids": [
+      2,
+      4,
+      5
+    ],
+    "wo_sv_replicate_ids": [
+      1,
+      2,
+      3
+    ],
+    "rapid_success_counts": [
+      43,
+      50,
+      47
+    ],
+    "wo_sv_success_counts": [
+      46,
+      47,
+      47
+    ],
+    "rapid_mean": 0.9333333333333332,
+    "wo_sv_mean": 0.9333333333333332,
+    "rapid_std_ddof0": 0.057348835113617505,
+    "wo_sv_std_ddof0": 0.00942809041582059,
+    "difference_percentage_points": 1.1102230246251565e-16,
+    "scene_wins_ties_losses": [
+      8,
+      33,
+      9
+    ],
+    "seed_welch_one_sided_p": 0.5,
+    "seed_permutation_one_sided_p": 0.65,
+    "conditional_scene_paired_t_one_sided_p": 0.5,
+    "conditional_scene_sign_one_sided_p": 0.6854705810546875,
+    "seed_welch_one_sided_p_holm": 0.8948433281843972,
+    "seed_permutation_one_sided_p_holm": 0.9,
+    "conditional_scene_paired_t_one_sided_p_holm": 0.7958358873965069,
+    "conditional_scene_sign_one_sided_p_holm": 0.711071103811264
+  },
+  {
+    "current_task": 2,
+    "original_task": 2,
+    "rapid_replicate_ids": [
+      1,
+      2,
+      3
+    ],
+    "wo_sv_replicate_ids": [
+      1,
+      2,
+      3
+    ],
+    "rapid_success_counts": [
+      42,
+      44,
+      41
+    ],
+    "wo_sv_success_counts": [
+      35,
+      50,
+      40
+    ],
+    "rapid_mean": 0.8466666666666667,
+    "wo_sv_mean": 0.8333333333333334,
+    "rapid_std_ddof0": 0.024944382578492966,
+    "wo_sv_std_ddof0": 0.12472191289246473,
+    "difference_percentage_points": 1.333333333333333,
+    "scene_wins_ties_losses": [
+      16,
+      21,
+      13
+    ],
+    "seed_welch_one_sided_p": 0.4474216640921986,
+    "seed_permutation_one_sided_p": 0.45,
+    "conditional_scene_paired_t_one_sided_p": 0.39791794369825345,
+    "conditional_scene_sign_one_sided_p": 0.355535551905632,
+    "seed_welch_one_sided_p_holm": 0.8948433281843972,
+    "seed_permutation_one_sided_p_holm": 0.9,
+    "conditional_scene_paired_t_one_sided_p_holm": 0.7958358873965069,
+    "conditional_scene_sign_one_sided_p_holm": 0.711071103811264
+  },
+  {
+    "current_task": 3,
+    "original_task": 3,
+    "rapid_replicate_ids": [
+      1,
+      2,
+      3
+    ],
+    "wo_sv_replicate_ids": [
+      1,
+      2,
+      3
+    ],
+    "rapid_success_counts": [
+      33,
+      37,
+      35
+    ],
+    "wo_sv_success_counts": [
+      12,
+      17,
+      31
+    ],
+    "rapid_mean": 0.6999999999999998,
+    "wo_sv_mean": 0.4000000000000001,
+    "rapid_std_ddof0": 0.032659863237109024,
+    "wo_sv_std_ddof0": 0.1608311744241976,
+    "difference_percentage_points": 30.0,
+    "scene_wins_ties_losses": [
+      31,
+      17,
+      2
+    ],
+    "seed_welch_one_sided_p": 0.0566658734832665,
+    "seed_permutation_one_sided_p": 0.05,
+    "conditional_scene_paired_t_one_sided_p": 6.011596986189898e-09,
+    "conditional_scene_sign_one_sided_p": 6.542541086673737e-08,
+    "seed_welch_one_sided_p_holm": 0.453326987866132,
+    "seed_permutation_one_sided_p_holm": 0.4,
+    "conditional_scene_paired_t_one_sided_p_holm": 3.606958191713939e-08,
+    "conditional_scene_sign_one_sided_p_holm": 3.925524652004242e-07
+  },
+  {
+    "current_task": 4,
+    "original_task": 4,
+    "rapid_replicate_ids": [
+      1,
+      2,
+      3
+    ],
+    "wo_sv_replicate_ids": [
+      1,
+      2,
+      3
+    ],
+    "rapid_success_counts": [
+      34,
+      40,
+      44
+    ],
+    "wo_sv_success_counts": [
+      36,
+      0,
+      30
+    ],
+    "rapid_mean": 0.7866666666666666,
+    "wo_sv_mean": 0.43999999999999995,
+    "rapid_std_ddof0": 0.082192186706253,
+    "wo_sv_std_ddof0": 0.31496031496047244,
+    "difference_percentage_points": 34.66666666666666,
+    "scene_wins_ties_losses": [
+      38,
+      8,
+      4
+    ],
+    "seed_welch_one_sided_p": 0.12824989074052925,
+    "seed_permutation_one_sided_p": 0.1,
+    "conditional_scene_paired_t_one_sided_p": 3.9733888990409385e-10,
+    "conditional_scene_sign_one_sided_p": 2.826573108904995e-08,
+    "seed_welch_one_sided_p_holm": 0.7694993444431755,
+    "seed_permutation_one_sided_p_holm": 0.7000000000000001,
+    "conditional_scene_paired_t_one_sided_p_holm": 3.1787111192327165e-09,
+    "conditional_scene_sign_one_sided_p_holm": 1.9786011762334965e-07
+  },
+  {
+    "current_task": 5,
+    "original_task": 5,
+    "rapid_replicate_ids": [
+      1,
+      3,
+      4
+    ],
+    "wo_sv_replicate_ids": [
+      1,
+      2,
+      3
+    ],
+    "rapid_success_counts": [
+      39,
+      40,
+      40
+    ],
+    "wo_sv_success_counts": [
+      40,
+      17,
+      10
+    ],
+    "rapid_mean": 0.7933333333333333,
+    "wo_sv_mean": 0.4466666666666667,
+    "rapid_std_ddof0": 0.009428090415820642,
+    "wo_sv_std_ddof0": 0.2562984371565478,
+    "difference_percentage_points": 34.66666666666667,
+    "scene_wins_ties_losses": [
+      37,
+      10,
+      3
+    ],
+    "seed_welch_one_sided_p": 0.09787340408206152,
+    "seed_permutation_one_sided_p": 0.2,
+    "conditional_scene_paired_t_one_sided_p": 3.9733888990408956e-10,
+    "conditional_scene_sign_one_sided_p": 9.732502803672105e-09,
+    "seed_welch_one_sided_p_holm": 0.6851138285744307,
+    "seed_permutation_one_sided_p_holm": 0.8,
+    "conditional_scene_paired_t_one_sided_p_holm": 3.1787111192327165e-09,
+    "conditional_scene_sign_one_sided_p_holm": 7.786002242937684e-08
+  },
+  {
+    "current_task": 6,
+    "original_task": 8,
+    "rapid_replicate_ids": [
+      1,
+      2,
+      3
+    ],
+    "wo_sv_replicate_ids": [
+      1,
+      2,
+      3
+    ],
+    "rapid_success_counts": [
+      30,
+      26,
+      32
+    ],
+    "wo_sv_success_counts": [
+      21,
+      29,
+      1
+    ],
+    "rapid_mean": 0.5866666666666668,
+    "wo_sv_mean": 0.34,
+    "rapid_std_ddof0": 0.04988876515698588,
+    "wo_sv_std_ddof0": 0.2355136231020759,
+    "difference_percentage_points": 24.666666666666664,
+    "scene_wins_ties_losses": [
+      30,
+      14,
+      6
+    ],
+    "seed_welch_one_sided_p": 0.13730010364971904,
+    "seed_permutation_one_sided_p": 0.1,
+    "conditional_scene_paired_t_one_sided_p": 3.840447817813559e-06,
+    "conditional_scene_sign_one_sided_p": 3.480084706097841e-05,
+    "seed_welch_one_sided_p_holm": 0.7694993444431755,
+    "seed_permutation_one_sided_p_holm": 0.7000000000000001,
+    "conditional_scene_paired_t_one_sided_p_holm": 1.1521343453440676e-05,
+    "conditional_scene_sign_one_sided_p_holm": 0.00010440254118293524
+  },
+  {
+    "current_task": 7,
+    "original_task": 6,
+    "rapid_replicate_ids": [
+      1,
+      2,
+      3
+    ],
+    "wo_sv_replicate_ids": [
+      1,
+      2,
+      3
+    ],
+    "rapid_success_counts": [
+      48,
+      47,
+      26
+    ],
+    "wo_sv_success_counts": [
+      24,
+      17,
+      44
+    ],
+    "rapid_mean": 0.8066666666666666,
+    "wo_sv_mean": 0.5666666666666668,
+    "rapid_std_ddof0": 0.2028683207293725,
+    "wo_sv_std_ddof0": 0.2288133640230735,
+    "difference_percentage_points": 24.0,
+    "scene_wins_ties_losses": [
+      30,
+      17,
+      3
+    ],
+    "seed_welch_one_sided_p": 0.16504251310881216,
+    "seed_permutation_one_sided_p": 0.1,
+    "conditional_scene_paired_t_one_sided_p": 4.3363876278115514e-07,
+    "conditional_scene_sign_one_sided_p": 7.005874067544937e-07,
+    "seed_welch_one_sided_p_holm": 0.7694993444431755,
+    "seed_permutation_one_sided_p_holm": 0.7000000000000001,
+    "conditional_scene_paired_t_one_sided_p_holm": 1.7345550511246206e-06,
+    "conditional_scene_sign_one_sided_p_holm": 3.5029370337724686e-06
+  },
+  {
+    "current_task": 8,
+    "original_task": 7,
+    "rapid_replicate_ids": [
+      1,
+      2,
+      3
+    ],
+    "wo_sv_replicate_ids": [
+      1,
+      2,
+      3
+    ],
+    "rapid_success_counts": [
+      30,
+      33,
+      30
+    ],
+    "wo_sv_success_counts": [
+      0,
+      0,
+      44
+    ],
+    "rapid_mean": 0.62,
+    "wo_sv_mean": 0.29333333333333333,
+    "rapid_std_ddof0": 0.028284271247461926,
+    "wo_sv_std_ddof0": 0.41483597829610785,
+    "difference_percentage_points": 32.666666666666664,
+    "scene_wins_ties_losses": [
+      30,
+      15,
+      5
+    ],
+    "seed_welch_one_sided_p": 0.19065432169095736,
+    "seed_permutation_one_sided_p": 0.2,
+    "conditional_scene_paired_t_one_sided_p": 5.5145112947150274e-08,
+    "conditional_scene_sign_one_sided_p": 1.1180760338902473e-05,
+    "seed_welch_one_sided_p_holm": 0.7694993444431755,
+    "seed_permutation_one_sided_p_holm": 0.8,
+    "conditional_scene_paired_t_one_sided_p_holm": 2.757255647357514e-07,
+    "conditional_scene_sign_one_sided_p_holm": 4.4723041355609894e-05
+  }
+]
