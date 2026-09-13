@@ -1,12 +1,9 @@
-\section{Problem Statement}
+\section{Overview}
+\label{sec:overview}
 \label{sec:problem}
-We consider programming a reusable \textit{nonprehensile manipulation} strategy from a single visual human demonstration $D$ and a language instruction $l$. The demonstration records a human performing the task in an example scene. The resulting program should solve a family of task variants $\mathcal{E}$ that share the same task objective but may differ in object appearance, geometry, pose, physical properties, and scene configuration.
 
-We assume that no manipulation primitives, explicit success criterion, or instantiated simulation environment are provided a priori. Given only $(D,l)$, the agent must first construct a set of executable manipulation primitives
-\[
-\mathcal{P} = \{P_1,\ldots,P_N\},
-\]
-and then compose these primitives into a strategy $\Pi$. The resulting program should capture the manipulation structure underlying the demonstration and generalize beyond the demonstrated instance:
+\xhdr{Problem statement.}
+We consider programming a reusable strategy for quasi-static manipulation of rigid bodies from \textit{a single visual human demonstration} $D$ and a language description $l$. The program should solve a family of task variants $\mathcal{E}$ that share the demonstrated objective but may differ in object appearance, geometry, pose, physical properties, and scene configuration. No manipulation primitives, explicit success or reward signal, or instantiated simulation environment are provided a priori. Given only $(D,l)$, the agent must construct executable primitives $\mathcal{P}=\{P_1,\ldots,P_N\}$ and compose them into a strategy $\Pi$ that captures the demonstrated manipulation structure and generalizes across $\mathcal{E}$:
 \[
 (D,l)
 \longrightarrow
@@ -14,4 +11,8 @@ and then compose these primitives into a strategy $\Pi$. The resulting program s
 \qquad
 \Pi(E;\mathcal{P}) \text{ succeeds for } E \in \mathcal{E}.
 \]
-The goal is to recover reusable primitives and a strategy that can adapt to unseen task variants.
+
+\xhdr{Overview of \ours.}
+As shown in Figure~\ref{fig:method_overview}, RAPID closes the agentic coding loop by deriving task specifications, manipulation primitives, and verification environments from $(D,l)$. It partitions the demonstration into interaction phases, infers a subgoal and success predicate for each phase, and reconstructs the corresponding interactive simulation environments. To improve generalization, RAPID augments these environments with feasible scene variants for program verification. For each phase, the coding agent generates a primitive to achieve its subgoal and iteratively executes, verifies, and revises it in the corresponding environment and its variants. It then infers the overall task goal and success predicate, composes the verified primitives into a strategy, and refines the composition through the same loop. At deployment, given an RGB-D observation of a novel scene and a language instruction, RAPID reconstructs the scene in simulation, instantiates and runs the strategy program in this scene, and executes the output trajectory on the robot. We describe program construction and verification in Sec.~\ref{sec:agentic_programming}.
+
+We introduce a \textit{relational program representation} to make manipulation strategies reusable across scenes. A strategy connects primitives through relational constraints that specify what each primitive should accomplish in the current scene. Each primitive then uses local trajectory optimization to achieve the requested object-level effect, taking the scene's geometry and physical properties into account. To deploy the program in a new scene, we use lightweight semantic binding to match scene objects to program roles. The strategy and primitives themselves remain unchanged. We provide the details of the representation in Sec.~\ref{sec:relational_programs}.

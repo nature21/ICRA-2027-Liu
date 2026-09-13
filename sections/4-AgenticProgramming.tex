@@ -1,30 +1,14 @@
 \section{Agentic Programming from Demonstration}
 \label{sec:agentic_programming}
 
-In Sec.~\ref{sec:relational_programs}, we introduced a reusable and generalizable representation of relational manipulation programs that can be efficiently instantiated in novel scenes. We now describe how RAPID employs a coding agent to construct and iteratively refine such programs from a single visual human demonstration. Specifically, RAPID closes the agentic loop with the single demonstration by automatically inferring the task specification, generating programs the manipulation primitives referred by the strategy, and reconstructing the interactive simulation environments used for verification.
-
-
-\subsection{Reconstructing Interactive Environments}
-\label{sec:loop_ingredients}
-
-\xhdr{Interactive environment.}
-To verify a manipulation program, RAPID reconstructs an interactive simulation environment from the initial RGB-D frame of the demonstration. We first use a vision-language model (VLM) to identify the objects in the scene, assign them with semantic labels, and estimate their physical properties. Then, for each semantic name, we utilize SAM~3~\cite{carion2026sam} to get a segmentation mask. The RGB-D frame and the mask are then fed into SAM~3D~\cite{chen2026sam} to reconstruct a complete mesh. Finally, we use FoundationPose~\cite{wen2024foundationpose} to register each mesh to the RGB-D frame, and assemble the reconstructed objects and robot model in MuJoCo~\cite{todorov2012mujoco}. The resulting environment preserves the scene entities, geometry, and spatial relations needed to execute the candidate program and evaluate its success predicates.
-
-\xhdr{Feasible scene variants.}
-Verifying a program only in the reconstructed environment from a single demonstration may leave accidental assumptions about the demonstration undetected. To improve reusablity and generalizability, RAPID uses a task-agnostic variation sampler to generate scene variants. This sampler will randomize object appearances, sizes, poses, as well as physical parameters such as mass, friction, and elasticity. However, the randomly sampled scenes might not be feasible for a certain primitive or strategy. Therefore, we will let the coding agent to write a filter to leave out those infeasible variants based on its understanding of the primitive or the strategy. A variant is accepted only if it preserves the declared roles and relations, retains the task meaning, and remains physically feasible. 
-
-\subsection{Primitive Construction}
-\label{sec:primitive_construction}
-To construct the primitives, we first need to decompose the demonstration of the overall tasks into a sequence of interaction phases. Given the full demonstration $D$ and its natural language description $l$, RAPID calls a subagent to partition $D$ into an ordered sequence of interaction segments $(D_1,\ldots,D_K)$ and assigns a local description $l_i$ to each $D_i$. For each $(D_i,l_i)$, if the coding agent recognizes that the behavior is covered by an existing primitive in the primitive library $\mathcal{P}$, we can simply retrieve this primitive. Otherwise, the coding agent will infer a primitive specification consisting of a semantic goal $G_i$ and a success predicate $\Psi_i$ from $(D_i,l_i)$. It further reasons about the contact interactions that produces the demonstrated effect, the relational structure that should remain invariant across executions, and the quantities that might vary between invocations. For example, for the flipping primitive in Table~\ref{tab:flip_primitive}, the demonstrated rotation supplies the flipping-angle argument, while the required relations among the target, support, fixture, and pusher define the reusable interaction structure.
-
-Given the inferred primitive specification and the analysis about physical interaction structure, the coding agent will generate the relational primitive contract $C_i$, geometry resolver $\rho_i$, and optimization cost $J_i$ introduced in Sec.~\ref{sec:relational_primitives}. RAPID then iteratively verifies and revises the resulting primitive in the reconstructed interactive environment $\widehat{E}_i$ as well as in automatically generated scene variants. The complete process is illustrated in Algorithm~\ref{alg:agentic_programming}: RAPID reconstructs the segment-level environment $\widehat{E}_i$, proposes a primitive program $P_i$, generates feasible scene variants, and revises the program until the success predicate $\Psi_i$ is satisfied across the verification set $\mathcal{V}_i$. Finally, the primitive is added to the library $\mathcal{P}$.
-
-\subsection{Strategy Composition}
-\label{sec:program_revision}
-
-After constructing the required primitives, RAPID composes them into a task-level strategy. Given the full demonstration $D$ and instruction $l$, the coding agent infers a strategy specification consisting of the overall task goal $G_\Pi$ and final success predicate $\Psi_\Pi$. The sequence of the interaction segments $(D_1,\ldots,D_K)$ determines the ordering of the primitive composition. The agent then constructs the strategy interface $C_\Pi$ and, for each phase $k$, selects a verified primitive $P_{i_k}$, defines the role map $m_k$, and specifies the connecting constraint $c_k$. Together, these components form an initial version of the strategy $\Pi$. 
-
-RAPID then iteratively verifies and revises the strategy in the reconstructed interactive environment $\widehat{E}_0$ and its feasible scene variants. As illustrated by Algorithm~\ref{alg:agentic_programming}, during each execution, RAPID binds the semantic roles, invokes the selected primitives sequentially, evaluates each connecting constraint just in time, and checks the final outcome with $\Psi_\Pi$. The failure signals are returned to the coding agent, and the coding agent will revise the strategy composition accordingly while keeping the verified primitives fixed, until $\Psi_\Pi$ is satisfied across $\mathcal{V}_\Pi$. 
+{
+\makeatletter
+{
+  \let\oldalgopost\@algocf@post@ruled
+  \def\@algocf@post@ruled{%
+    \oldalgopost
+    \vspace{-20pt}%
+  }
 
 \begin{algorithm}[t]
     \caption{RAPID}
@@ -62,3 +46,39 @@ RAPID then iteratively verifies and revises the strategy in the reconstructed in
         \KwRet{$Q$}\;
     }
 \end{algorithm}
+}
+\makeatother
+}
+
+
+We now describe how \ours constructs and verifies the programs defined in Sec.~\ref{sec:relational_programs}, covering environment reconstruction, primitive construction, and strategy composition.
+
+\subsection{Reconstructing Interactive Environments}
+\label{sec:loop_ingredients}
+
+\xhdr{Interactive environment.}
+To verify a manipulation program, RAPID reconstructs an interactive simulation environment from the initial RGB-D frame of the demonstration. We first use a vision-language model (VLM) to identify the objects in the scene, assign them with semantic labels, and estimate their physical properties. Then, for each semantic name, we utilize SAM~3~\cite{carion2026sam} to get a segmentation mask. The RGB-D frame and the mask are then fed into SAM~3D~\cite{chen2026sam} to reconstruct a complete mesh. Finally, we use FoundationPose~\cite{wen2024foundationpose} to register each mesh to the RGB-D frame, and assemble the reconstructed objects and robot model in MuJoCo~\cite{todorov2012mujoco}. The resulting environment preserves the scene entities, geometry, and spatial relations needed to execute the candidate program and evaluate its success predicates.
+
+\xhdr{Feasible scene variants.}
+To expose assumptions specific to the demonstrated scene, RAPID uses a task-agnostic variation sampler to randomize object appearances, sizes, poses, and physical parameters such as mass, friction, and elasticity. However, the randomly sampled scenes might not be feasible for a certain primitive or strategy. Therefore, we let the coding agent to write a filter for each primitive or strategy that accepts only variants preserving the declared roles and relations, task meaning, and physical feasibility.
+
+\begin{table*}[t]
+    \centering
+    \caption{\textbf{Success rates on nonprehensile manipulation tasks in simulation.} We report the mean and standard deviation across three trials. \textbf{Bold} denotes the best mean or results not significantly worse according to a one-sided sign test with Holm correction ($\alpha=0.05$).}
+    \label{tab:experiment_results}
+    \input{tables/experiment_main}
+    \vspace{-0.2in}
+\end{table*}
+
+\subsection{Primitive Construction}
+\label{sec:primitive_construction}
+Given the full demonstration $D$ and its natural language description $l$, RAPID calls a subagent to partition $D$ into an ordered sequence of interaction segments $(D_1,\ldots,D_K)$ and assigns a local description $l_i$ to each $D_i$. For each $(D_i,l_i)$, if the coding agent recognizes that the behavior is covered by an existing primitive in the primitive library $\mathcal{P}$, we can simply retrieve this primitive. Otherwise, the coding agent will infer a primitive specification consisting of a semantic goal $G_i$ and a success predicate $\Psi_i$ from $(D_i,l_i)$. It further reasons about the contact interactions that produce the demonstrated effect, the relational structure that should remain invariant across executions, and the quantities that might vary between invocations. For example, in Table~\ref{tab:flip_primitive}, the demonstrated rotation supplies the flipping-angle argument, while relations among the target, support, fixture, and pusher define the reusable interaction structure.
+
+Given this specification and interaction analysis, the coding agent generates the relational interface $C_i$, geometry resolver $\rho_i$, and optimization cost $J_i$ introduced in Sec.~\ref{sec:relational_primitives}. As shown in Algorithm~\ref{alg:agentic_programming}, RAPID verifies and revises $P_i$ across a verification set $\mathcal{V}_i$ comprising the reconstructed segment-level environment $\widehat{E}_i$ and its feasible scene variants until $\Psi_i$ is satisfied throughout. The verified primitive is then added to the library $\mathcal{P}$.
+
+\subsection{Strategy Composition}
+\label{sec:program_revision}
+
+After constructing the required primitives, RAPID composes them into a task-level strategy. Given the full demonstration $D$ and instruction $l$, the coding agent infers a strategy specification consisting of the overall task goal $G_\Pi$ and final success predicate $\Psi_\Pi$. The sequence of the interaction segments $(D_1,\ldots,D_K)$ determines the ordering of the primitive composition. The agent then constructs the strategy interface $C_\Pi$ and, for each phase $k$, selects a verified primitive $P_{i_k}$, defines the role map $m_k$, and specifies the connecting constraint $c_k$. Together, these components form an initial version of the strategy $\Pi$. 
+
+RAPID verifies the strategy in the reconstructed environment $\widehat{E}_0$ and its feasible scene variants using the execution procedure in Sec.~\ref{sec:relational_strategy}. Failures guide the coding agent to revise the composition while keeping the verified primitives fixed, until $\Psi_\Pi$ is satisfied across this verification set $\mathcal{V}_\Pi$.

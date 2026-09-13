@@ -1,9 +1,7 @@
 \section{Relational Manipulation Programs}
 \label{sec:relational_programs}
 
-As shown in Figure~\ref{fig:method_overview}, RAPID uses agentic programming to construct a reusable robot manipulation strategy $\Pi$ given a single visual human demonstration $D$ and its corresponding language instruction $l$. It first infers the task specification from $(D,l)$ and generates an initial object-centric, relational program for accomplishing the task. RAPID then reconstructs an interactive simulation environment from $D$, in which it iteratively executes, verifies, and revises the program. To improve reusability and generalization, RAPID also proposes sevaral scene variants, verifies the program across them, and uses the failures to guide revision. At deployment, the strategy is frozen and can be instantiated in a novel scene through lightweight semantic binding.
-
-In this section, we introduce the object-centric and relational program representation of primitives, how primitives are composed to form a strategy, and  how a strategy is instantiated in novel scenes. We then describe how RAPID constructs and verifies these programs from a single human demonstration in Sec.~\ref{sec:agentic_programming}.
+We now define relational primitives, their composition into task-level strategies, and their instantiation in novel scenes.
 
 \subsection{Primitives as Local Trajectory-Optimization Programs}
 \label{sec:relational_primitives}
@@ -11,10 +9,10 @@ A primitive is a reusable behavior for realizing an object-level motion effect, 
 \begin{equation*}
     P_i=(G_i,C_i,\Psi_i,\rho_i,J_i)\in\mathcal{P}.
 \end{equation*}
-Here, $G_i$ is a semantic, object-centric description of the intended effect; $C_i$ is the relational interface; $\Psi_i$ is the verifiable success condition; $\rho_i$ is the geometry resolver; and $J_i$ is the optimization cost. Together, these components specify how the primitive is instantiated, optimized, and verified in a specific scene. A primitive is therefore neither a fixed trajectory nor a black-box policy. As a concrete example, Table~\ref{tab:flip_primitive} illustrates each component for flipping an object against a wall. We now explain the components in detail. 
+Here, $G_i$ is a semantic, object-centric description of the intended effect; $C_i$ is the relational interface; $\Psi_i$ is the verifiable success condition; $\rho_i$ is the geometry resolver; and $J_i$ is the optimization cost. Together, these components specify how the primitive is instantiated, optimized, and verified in a specific scene. A primitive is therefore neither a fixed trajectory nor a black-box policy. Table~\ref{tab:flip_primitive} illustrates each component for flipping an object against a fixture.
 
 \begin{table}[t]
-    \caption{Relational program for flipping an object against a wall.}
+    \caption{\textbf{Object-centric trajectory optimization program for flipping.}}
     \label{tab:flip_primitive}
     \begin{adjustbox}{width=\columnwidth}
     \centering
@@ -62,14 +60,14 @@ The declarations $\mathbf{r}_i$ and $\mathbf{q}_i$ specify the semantic scene ro
     \qquad
     g_i\in\operatorname{Val}(\mathbf{q}_i).
 \end{equation*}
-Here, $\operatorname{Bind}_E(\mathbf{r}_i,\Gamma_i)$ denotes the type-compatible assignments of scene entities from the environment $E$ to $\mathbf{r}_i$ that satisfy $\Gamma_i$, and $\operatorname{Val}(\mathbf{q}_i)$ denotes the values matching the types declared by $\mathbf{q}_i$. Thus, $b_i$ instantiates the role declarations and $g_i$ instantiates the effect-parameter declarations. In the flipping example (Table~\ref{tab:flip_primitive}), $b_i$ binds the target, support plane, fixture, and pusher to scene entities, while $g_i$ supplies the requested angle. Scene-dependent geometry remains internal to the primitive and is resolved by $\rho_i$ at execution time.
+Here, $\operatorname{Bind}_E(\mathbf{r}_i,\Gamma_i)$ denotes the type-compatible assignments of scene entities from the environment $E$ to $\mathbf{r}_i$ that satisfy $\Gamma_i$, and $\operatorname{Val}(\mathbf{q}_i)$ denotes the values matching the types declared by $\mathbf{q}_i$. In the flipping example (Table~\ref{tab:flip_primitive}), $b_i$ binds the target, support plane, fixture, and pusher to scene entities, while $g_i$ supplies the requested angle. Scene-dependent geometry remains internal to the primitive and is resolved by $\rho_i$ at execution time.
 
 \xhdr{Geometry resolver.}
 Let $\mathcal{X}(E)$ be the state space of environment $E$. At each state $x_t\in\mathcal{X}(E)$ along a rollout, the geometry resolver computes
 \begin{equation*}
     \phi_{i,t} = \rho_i(E,x_t,b_i), \qquad t=0,\ldots,T,
 \end{equation*}
-where $b_i$ assigns the primitive's semantic roles to concrete entities in $E$, and $\phi_{i,t}$ collects the corresponding geometric features at time $t$.
+where $\phi_{i,t}$ collects the geometric features at time $t$.
 
 \xhdr{Success predicate.}
 For a terminal state $x_T\in\mathcal{X}(E)$, the predicate $\Psi_i(E,x_T;g_i,\phi_{i,T})\in\{0,1\}$ provides an executable interpretation of $G_i$. It evaluates the achieved object relations and requested effect, yielding an unambiguous signal for verification. 
@@ -91,7 +89,7 @@ During primitive construction, the agent also proposes an initialization heurist
     = \arg\min_z
     J_i\!\left(E,\tau(z);g_i,\phi_{i,0:T}(z)\right).
 \end{equation*}
-We solve this trajectory-optimization problem with the Cross-Entropy Method (CEM)~\cite{deboer2005tutorial}, a sampling-based optimizer. The primitive thereby adapts its motion to the object pose, size, geometry, physical properties, and requested effect.
+We solve this trajectory-optimization problem with the Cross-Entropy Method (CEM)~\cite{deboer2005tutorial}, a sampling-based optimizer. We use CEM because it is gradient-free, allowing us to optimize robot motions without differentiating through the contact-rich simulation. The primitive thereby adapts its motion to the object pose, size, geometry, physical properties, and requested effect.
 
 \subsection{Strategies as Primitive Composition by Constraints}
 \label{sec:relational_strategy}
@@ -99,7 +97,7 @@ We solve this trajectory-optimization problem with the Cross-Entropy Method (CEM
 \begin{figure}[t]
     \centering
     \includegraphics[width=\linewidth]{figures/program.pdf}
-    \caption{Program}
+    \caption{\textbf{Composing primitives by relational constraints.}}
     \label{fig:program}
     \vspace{-0.3in}
 \end{figure}
@@ -136,7 +134,7 @@ where $s_{k-1}\in\mathcal{X}(E)$ denotes the environment state after the executi
 \end{equation*}
 Here, $\operatorname{Exec}$ solves the local trajectory-optimization problem of $P_{i_k}$ and executes the optimized trajectory.
 
-For example, consider a phase that establishes target--fixture contact using a pushing primitive. The role map $m_k$ maps the strategy's target, support, and tool roles to the corresponding roles exposed by the primitive, producing the primitive binding $b_k$. The connecting constraint $c_k$ then computes the required displacement from the current target and fixture poses and expresses it in the primitive's relational input frame, producing the effect argument $g_k$.
+For example, Figure~\ref{fig:program} shows a \textit{press move} following a \textit{flip}. The role map $m_k$ maps the strategy's target object, supporting surface, and tool roles to the corresponding roles of the \textit{press-move} primitive, producing $b_k$. The connecting constraint $c_k$ determines the goal position from the relation between the brown obstacle and the white fixture. Using the target object's current position in the post-flip state $s_{k-1}$, it computes the displacement toward this goal along the fixture axis, producing the effect argument $g_k$ for the \textit{press move} primitive.
 
 \subsection{Strategy Instantiation in Novel Scenes}
 \label{sec:novel_instantiation}
