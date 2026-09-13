@@ -51,11 +51,13 @@ RAPID: Robot Agentic Programming from Demonstrations
 \pagestyle{empty}
 
 \begin{abstract}
-    This is the abstract.
+Coding agents solve complex programming problems through an iterative loop of generation, execution, verification, and revision. Bringing this agentic coding loop to robotic manipulation, however, typically assumes task success signals, human-engineered manipulation primitives, and interactive environments for verification. We introduce \textbf{Robot Agentic Programming from Demonstrations (\ours)}, a framework for generating and refining robot programs from a \textit{single visual human demonstration}. \ours uses the demonstration to infer the task specification, construct task-specific manipulation primitives, reconstruct an interactive simulation environment, and generate scene variants for verification and refinement. To make the resulting programs reusable beyond the demonstrated scene, we introduce a \textit{relational program representation} that captures the structure of the demonstrated strategy rather than its specific motions. Primitives are expressed as trajectory-optimization programs that realize object-level motion effects, while their composition is defined through relational constraints that resolve scene-dependent geometry at execution time. We primarily evaluate \ours on eight contact-rich nonprehensile manipulation tasks, where it outperforms baselines under substantial variations in object pose, geometry, material, and scene configuration. To assess generality beyond nonprehensile tasks, we further evaluate \ours on LIBERO-Pro, which features prehensile manipulation tasks. Finally, we demonstrate reliable deployment on a real robotic system.
+
+
 \end{abstract}
 
 \input{sections/1-Introduction}
-\input{sections/2-ProblemStatement}
+\input{sections/2-OverviewOfRAPID}
 \input{sections/3-RelationalManipulationPrograms}
 \input{sections/4-AgenticProgramming}
 \input{sections/5-Experiments}

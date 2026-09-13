@@ -65,8 +65,13 @@ In this section, we answer the following questions:
 
 \xhdr{Results.} Table~\ref{tab:libero_pro_results} reports the results on LIBERO-Pro. \ours achieves the highest success rate on five of the six task settings, demonstrating the effectiveness of our relational program representation. On LIBERO-Goal (Pos.), \ours ranks second behind ASPIRE. This gap stems from articulated-object manipulation: primitives discovered by \ours from only a single debug scene, such as drawer opening, are less robust to spatial variation, whereas ASPIRE is provided with an \textit{interpolate segment} motion primitive that simplifies such interactions. Overall, these results demonstrate the generality of our framework beyond non-prehensile manipulation.
 
-\subsection{Real World Experiments for Nonprehensile Manipulation}
-To demonstrate that \ours can work in a real robotic system, we conduct real-world experiments on the eight nonprehensile manipulation tasks in Figure~\ref{fig:experiment_visualization}. As illustrated in Figure~\ref{fig:experiment_setting}, our real-world setup consists of a Franka Research 3 robot arm equipped with a parallel gripper and an Intel RealSense L515 camera for RGB-D observations. We compare \ours against CaP-Agent0~\cite{fu2026cap}. For each task, we evaluate on 10 test scenes, and report the success rate in Figure~\ref{fig:experiment_real}. 
+\subsection{Real-World Experiments for Nonprehensile Manipulation}
+To demonstrate that \ours can operate effectively on a real robotic system, we conduct real-world experiments on the eight nonprehensile manipulation tasks shown in Figure~\ref{fig:experiment_visualization}. As illustrated in Figure~\ref{fig:experiment_setting}, our setup consists of a Franka Research 3 robot arm equipped with a parallel gripper and an Intel RealSense L515 camera for RGB-D observations. We compare \ours against CaP-Agent0~\cite{fu2026cap}. For each task, we evaluate 10 test scenes and report the success rate.
+
+\xhdr{Results.} As shown in Figure~\ref{fig:experiment_real}, with our relational program representation and compliant operational-space controller, contact-rich nonprehensile behaviors optimized in simulation can be transferred directly to the real robot and executed robustly. In contrast, CaP-Agent0 struggles to generate reliable trajectories using purely procedural programs. Moreover, leveraging the VLM's prior knowledge to estimate physical parameters such as mass, friction, and restitution, together with SAM3D's strong 3D reconstruction capability, helps keep the real-to-sim and sim-to-real gaps manageable.
+
+\xhdr{Failure Analysis.} 
+
 
 \begin{figure}[t]
     \centering
