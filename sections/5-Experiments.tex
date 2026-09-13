@@ -55,7 +55,7 @@ In this section, we answer the following questions:
 
 \begin{table}[t]
     \centering
-    \caption{Experiment Results on LIBERO-Pro}
+    \caption{\textbf{Experiment Results on LIBERO-Pro.}}
     \label{tab:libero_pro_results}
     \input{tables/experiment_libero_pro}
     \vspace{-0.2in}
@@ -66,14 +66,11 @@ To demonstrate that \ours can operate effectively on a real robotic system, we c
 
 \xhdr{Results.} As shown in Figure~\ref{fig:experiment_real}, with our relational program representation and compliant operational-space controller, contact-rich nonprehensile behaviors optimized in simulation can be transferred directly to the real robot and executed robustly. In contrast, CaP-Agent0 struggles to generate reliable trajectories using purely procedural programs. Moreover, leveraging the VLM's prior knowledge to estimate physical parameters such as mass, friction, and restitution, together with SAM3D's strong 3D reconstruction capability, helps keep the real-to-sim and sim-to-real gaps manageable.
 
-\xhdr{Failure Analysis.} 
-
-
 \begin{figure}[t]
     \centering
     \includegraphics[width=0.44\linewidth]{figures/experiment_setup.pdf}
     \includegraphics[width=0.54\linewidth]{figures/real_world_results.pdf}
-    \caption{Real world experiments.}
+    \caption{\textbf{Real-world experimental setup and results.}}
     \label{fig:experiment_real}
     \vspace{-0.3in}
 \end{figure}
