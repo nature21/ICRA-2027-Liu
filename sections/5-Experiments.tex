@@ -6,6 +6,12 @@ In this section, we answer the following questions:
 (3) How well does \ours perform in a real-world robotic system?
 
 \subsection{Experimental Setup for Nonprehensile Manipulation}
+\begin{table*}[!t]
+    \centering
+    \caption{\textbf{Success rates on nonprehensile manipulation tasks in simulation.} We report the mean and standard deviation across three trials. \textbf{Bold} denotes the best mean or results not significantly worse according to a one-sided sign test with Holm correction ($\alpha=0.05$).}
+    \label{tab:experiment_results}
+    \input{tables/experiment_main}
+\end{table*}
 \xhdr{Tasks.} In this section, we evaluate \ours on 8 nonprehensile manipulation tasks. For each task, we provide a single visual human demonstration together with a language description. In all tasks, the objects are initially not graspable by the parallel gripper. The robot must therefore execute a sequence of nonprehensile manipulation primitives, such as pushing, flipping, pivoting, and toppling, to reach the target configuration. Importantly, the primitives are \textit{not} provided to the coding agent a priori. Figure~\ref{fig:experiment_visualization} illustrates the eight tasks:
 
 \xhdr{T1.} \textit{Push the object toward the corridor, switch the contact face, and push it again to store it inside the corridor.}
@@ -33,12 +39,6 @@ In this section, we answer the following questions:
 (4) \textit{CaP-Agent0 + SV}: we augment CaP-Agent0 with our scene variant (SV) generation, allowing the agent to further refine its program through rollouts on scene variants. We do not compare with ASPIRE~\cite{lu2026aspire} on nonprehensile tasks because ASPIRE requires pre-given motion primitives. We use Codex~\cite{openai_codex} powered by GPT-5.6 Sol with high reasoning effort as the coding agent for all methods.
 
 \subsection{Results and Analysis for Nonprehensile Manipulation}
-\begin{table*}[t]
-    \centering
-    \caption{\textbf{Success rates on nonprehensile manipulation tasks in simulation.} We report the mean and standard deviation across three trials. \textbf{Bold} denotes the best mean or results not significantly worse according to a one-sided sign test with Holm correction ($\alpha=0.05$).}
-    \label{tab:experiment_results}
-    \input{tables/experiment_main}
-\end{table*}
 
 \xhdr{\ours successfully constructs reusable programs by closing the agentic loop from a single demonstration.} As shown in Table~\ref{tab:experiment_results}, vanilla CaP performs poorly, largely because it lacks an environment in which generated programs can be verified and refined. Notably, its performance remains poor even when it is allowed to generate a new program for each test scene. In contrast, \ours reconstructs a simulation environment from the demonstration, infers a success predicate from the demonstration and language instruction, and uses this predicate to verify and iteratively refine candidate programs in simulation, thereby closing the agentic coding loop. This enables \ours to construct a reusable program for each task that generalizes across diverse test scenes. Interestingly, guiding CaP to generate programs using our relational program representation does not improve its performance. This suggests that representation alone is insufficient: without closed-loop verification, the coding agent struggles to correctly reason about object relations and therefore fails to construct meaningful relational programs.
 
@@ -51,6 +51,7 @@ In this section, we answer the following questions:
     \includegraphics[width=\linewidth]{figures/experiment_visualization.pdf}
     \caption{\textbf{Real-world execution of the solution trajectories found by \ours.}}
     \label{fig:experiment_visualization}
+    \vspace{-0.3in}
 \end{figure}
 
 \subsection{Experiments on LIBERO-Pro}

@@ -13,8 +13,7 @@ A primitive is a reusable behavior for realizing an object-level motion effect, 
 \end{equation*}
 Here, $G_i$ is a semantic, object-centric description of the intended effect; $C_i$ is the relational interface; $\Psi_i$ is the verifiable success condition; $\rho_i$ is the geometry resolver; and $J_i$ is the optimization cost. Together, these components specify how the primitive is instantiated, optimized, and verified in a specific scene. A primitive is therefore neither a fixed trajectory nor a black-box policy. As a concrete example, Table~\ref{tab:flip_primitive} illustrates each component for flipping an object against a wall. We now explain the components in detail. 
 
-\begin{table}[b]
-    \vspace{-0.2in}
+\begin{table}[t]
     \caption{Relational program for flipping an object against a wall.}
     \label{tab:flip_primitive}
     \begin{adjustbox}{width=\columnwidth}
@@ -49,7 +48,7 @@ Here, $G_i$ is a semantic, object-centric description of the intended effect; $C
         \bottomrule
     \end{tabular}
     \end{adjustbox}
-    
+    \vspace{-0.3in}
 \end{table}
 
 \xhdr{Relational interface.}
@@ -102,6 +101,7 @@ We solve this trajectory-optimization problem with the Cross-Entropy Method (CEM
     \includegraphics[width=\linewidth]{figures/program.pdf}
     \caption{Program}
     \label{fig:program}
+    \vspace{-0.3in}
 \end{figure}
 
 Suppose we have a library of primitives $\mathcal{P}$, where each $P_i \in \mathcal{P}$ realizes an object-level motion effect. A strategy $\Pi$ is a reusable task-level program that composes these primitives to accomplish an overall task. It specifies the sequence of primitives to invoke, how task roles map to each primitive, and how the requested effect of each invocation is determined:
