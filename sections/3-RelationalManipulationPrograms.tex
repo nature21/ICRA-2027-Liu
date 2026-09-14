@@ -46,7 +46,7 @@ Here, $G_i$ is a semantic, object-centric description of the intended effect; $C
         \bottomrule
     \end{tabular}
     \end{adjustbox}
-    \vspace{-0.3in}
+    \vspace{-0.2in}
 \end{table}
 
 \xhdr{Relational interface.}
@@ -102,7 +102,7 @@ We solve this trajectory-optimization problem with the Cross-Entropy Method (CEM
     \vspace{-0.3in}
 \end{figure}
 
-Suppose we have a library of primitives $\mathcal{P}$, where each $P_i \in \mathcal{P}$ realizes an object-level motion effect. A strategy $\Pi$ is a reusable task-level program that composes these primitives to accomplish an overall task. It specifies the sequence of primitives to invoke, how task roles map to each primitive, and how the requested effect of each invocation is determined:
+After the primitives $\mathcal{P}$ are constructed, where each $P_i \in \mathcal{P}$ realizes an object-level motion effect, the next step is to compose them into a strategy $\Pi$, a reusable task-level program that accomplishes an overall task. It specifies the sequence of primitives to invoke, how task roles map to each primitive, and how the requested effect of each invocation is determined:
 \begin{equation*}
     \Pi
     = \left(G_\Pi,C_\Pi,\Psi_\Pi,
@@ -134,7 +134,7 @@ where $s_{k-1}\in\mathcal{X}(E)$ denotes the environment state after the executi
 \end{equation*}
 Here, $\operatorname{Exec}$ solves the local trajectory-optimization problem of $P_{i_k}$ and executes the optimized trajectory.
 
-For example, Figure~\ref{fig:program} shows a \textit{press move} following a \textit{flip}. The role map $m_k$ maps the strategy's target object, supporting surface, and tool roles to the corresponding roles of the \textit{press-move} primitive, producing $b_k$. The connecting constraint $c_k$ determines the goal position from the relation between the brown obstacle and the white fixture. Using the target object's current position in the post-flip state $s_{k-1}$, it computes the displacement toward this goal along the fixture axis, producing the effect argument $g_k$ for the \textit{press move} primitive.
+For example, \fig{fig:program} shows a \textit{press move} following a \textit{flip}. The role map $m_k$ maps the strategy's target object, supporting surface, and tool roles to the corresponding roles of the \textit{press-move} primitive, producing $b_k$. The connecting constraint $c_k$ determines the goal position from the relation between the brown obstacle and the white fixture. Using the target object's current position in the post-flip state $s_{k-1}$, it computes the displacement toward this goal along the fixture axis, producing the effect argument $g_k$ for the \textit{press move} primitive.
 
 \subsection{Strategy Instantiation in Novel Scenes}
 \label{sec:novel_instantiation}
