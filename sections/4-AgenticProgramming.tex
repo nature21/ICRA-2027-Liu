@@ -63,19 +63,11 @@ To verify a manipulation program, RAPID reconstructs an interactive simulation e
 \xhdr{Feasible scene variants.}
 To construct variants of the demonstrated scene, RAPID uses a task-agnostic variation sampler to randomize object appearances, sizes, poses, and physical parameters such as mass, friction, and elasticity. However, the randomly sampled scenes might not be feasible for a certain primitive or strategy. Therefore, we ask the coding agent to write a filter for each primitive or strategy that accepts only variants preserving the declared roles and relations, task meaning, and physical feasibility.
 
-\begin{table*}[t]
-    \centering
-    \caption{\textbf{Success rates on nonprehensile manipulation tasks in simulation.} We report the mean and standard deviation across three trials. \textbf{Bold} denotes the best mean or results not significantly worse according to a one-sided sign test with Holm correction ($\alpha=0.05$).}
-    \label{tab:experiment_results}
-    \input{tables/experiment_main}
-    \vspace{-0.2in}
-\end{table*}
-
 \subsection{Primitive Construction}
 \label{sec:primitive_construction}
 Given the full demonstration $D$ and its natural language description $l$, RAPID calls a subagent to partition $D$ into an ordered sequence of interaction segments $(D_1,\ldots,D_K)$ and assigns a local description $l_i$ to each $D_i$. For each $(D_i,l_i)$, if the coding agent recognizes that the behavior is covered by an existing primitive in the primitive library $\mathcal{P}$, we can simply retrieve this primitive. Otherwise, the coding agent will infer a primitive specification consisting of a semantic goal $G_i$ and a success predicate $\Psi_i$ from $(D_i,l_i)$. It further reasons about the contact interactions that produce the demonstrated effect, the relational structure that should remain invariant across executions, and the quantities that might vary between invocations. For example, in Table~\ref{tab:flip_primitive}, the demonstrated rotation supplies the flipping-angle argument, while relations among the target, support, fixture, and pusher define the reusable interaction structure.
 
-Given this specification and interaction analysis, the coding agent generates the relational interface $C_i$, geometry resolver $\rho_i$, and optimization cost $J_i$ introduced in Sec.~\ref{sec:relational_primitives}. As shown in Algorithm~\ref{alg:agentic_programming}, RAPID verifies and revises $P_i$ across a verification set $\mathcal{V}_i$ comprising the reconstructed segment-level environment $\widehat{E}_i$ and its feasible scene variants until $\Psi_i$ is satisfied throughout. The verified primitive is then added to the library $\mathcal{P}$.
+Given this specification and interaction analysis, the coding agent generates the relational interface $C_i$, geometry resolver $\rho_i$, and optimization cost $J_i$ introduced in Sec.~\ref{sec:relational_primitives}. As shown in Algorithm~\ref{alg:agentic_programming}, RAPID verifies and revises $P_i$ across a verification set $\mathcal{V}_i$ comprising the reconstructed segment-level environment $\widehat{E}_i$ and its variants until $\Psi_i$ is satisfied throughout. The verified primitive is then added to the library $\mathcal{P}$.
 
 \subsection{Strategy Composition}
 \label{sec:program_revision}

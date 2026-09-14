@@ -12,7 +12,7 @@ A primitive is a reusable behavior for realizing an object-level motion effect, 
 Here, $G_i$ is a semantic, object-centric description of the intended effect; $C_i$ is the relational interface; $\Psi_i$ is the verifiable success condition; $\rho_i$ is the geometry resolver; and $J_i$ is the optimization cost. Together, these components specify how the primitive is instantiated, optimized, and verified in a specific scene. A primitive is therefore neither a fixed trajectory nor a black-box policy. Table~\ref{tab:flip_primitive} illustrates each component for flipping an object against a fixture.
 
 \begin{table}[t]
-    \caption{\textbf{Object-centric trajectory optimization program for flipping.}}
+    \caption{\textbf{Local trajectory optimization program for the primitive \textit{flip}.}}
     \label{tab:flip_primitive}
     \begin{adjustbox}{width=\columnwidth}
     \centering
@@ -23,19 +23,18 @@ Here, $G_i$ is a semantic, object-centric description of the intended effect; $C
         \textbf{Component} & \textbf{Content} \\
         \midrule
         Semantic goal $G_i$
-            & Flip the target against the vertical fixture for a specific angle. \\
+            & Flip the target object against a fixture for a specific angle. \\
         \rowcolor{black!5}
-        Relational contract $C_i$
-            & Semantic roles $\mathbf{r}_i$: target, support plane, fixture, and pusher.
-              Relations $\Gamma_i$: the target rests on the support plane, and the fixture
+        Relational interface $C_i$
+            & Semantic roles $\mathbf{r}_i$: target object, support plane, fixture, and pusher.
+              Relations $\Gamma_i$: the object rests on the support plane, and the fixture
               exposes a reachable vertical face. Effect parameter $\mathbf{q}_i$: flipping angle.\\
         Success predicate $\Psi_i$
             & Check that the achieved rotation matches the flipping angle and that the
               target remains supported, near the fixture, and settled. \\
         \rowcolor{black!5}
         Geometry resolver $\rho_i$
-            & At each rollout state, derive the support plane, fixture face,
-              pivot axis, target faces, dimensions, and clearances. \\
+            & At each rollout state, resolve the support plane, the vertical face of the fixture, the flipping axis, and dimensions of the target object. \\
         Final cost $J_i^{\mathrm{f}}$
             & Penalize terminal rotation error relative to the flipping angle, support
               and fixture gaps, and terminal velocity. \\
@@ -54,20 +53,20 @@ We write the primitive interface as
 \begin{equation*}
     C_i=(\mathbf{r}_i,\Gamma_i,\mathbf{q}_i).
 \end{equation*}
-The declarations $\mathbf{r}_i$ and $\mathbf{q}_i$ specify the semantic scene roles and typed effect-parameter slots required by $P_i$, while $\Gamma_i$ specifies the relations among the roles. An invocation supplies runtime arguments $(b_i,g_i)$ satisfying
+Here, $\mathbf{r}_i$ declares the semantic roles involved in the primtive, $\mathbf{q}_i$ declares the effect parameter, and $\Gamma_i$ specifies the relations among the roles. For example, for the primitive \textit{flip} in Table~\ref{tab:flip_primitive}, $\mathbf{r}_i$ declares the relevant semantic roles \textit{(target object, support plane, fixture, pusher)}, and the effect parameter $\mathbf{q}_i$ is the requested flipping angle. To apply a primitive in a scene, an invocation supplies runtime arguments $(b_i,g_i)$ satisfying
 \begin{equation*}
     b_i\in\operatorname{Bind}_E(\mathbf{r}_i,\Gamma_i),
     \qquad
     g_i\in\operatorname{Val}(\mathbf{q}_i).
 \end{equation*}
-Here, $\operatorname{Bind}_E(\mathbf{r}_i,\Gamma_i)$ denotes the type-compatible assignments of scene entities from the environment $E$ to $\mathbf{r}_i$ that satisfy $\Gamma_i$, and $\operatorname{Val}(\mathbf{q}_i)$ denotes the values matching the types declared by $\mathbf{q}_i$. In the flipping example (Table~\ref{tab:flip_primitive}), $b_i$ binds the target, support plane, fixture, and pusher to scene entities, while $g_i$ supplies the requested angle. Scene-dependent geometry remains internal to the primitive and is resolved by $\rho_i$ at execution time.
+Here, $\operatorname{Bind}_E(\mathbf{r}_i,\Gamma_i)$ denotes the type-compatible assignments of the objects in the scene $E$ to $\mathbf{r}_i$ that satisfy $\Gamma_i$, and $\operatorname{Val}(\mathbf{q}_i)$ denotes the values matching the types declared by $\mathbf{q}_i$. Scene-dependent geometry remains internal to the primitive and is resolved by $\rho_i$ at execution time.
 
 \xhdr{Geometry resolver.}
-Let $\mathcal{X}(E)$ be the state space of environment $E$. At each state $x_t\in\mathcal{X}(E)$ along a rollout, the geometry resolver computes
+Let $\mathcal{X}(E)$ be the state space of environment $E$. For the state $x_t\in\mathcal{X}(E)$ at time step $t$, the geometry resolver $\rho_i$ computes the geometric features $\phi_{i,t}$: 
 \begin{equation*}
-    \phi_{i,t} = \rho_i(E,x_t,b_i), \qquad t=0,\ldots,T,
+    \phi_{i,t} = \rho_i(E,x_t,b_i), \qquad t=0,\ldots,T.
 \end{equation*}
-where $\phi_{i,t}$ collects the geometric features at time $t$.
+For example, for the primitive \textit{flip} in Table~\ref{tab:flip_primitive}, the agent would write detectors for the support plane, the vertical face of the fixture, the flipping axis, etc. 
 
 \xhdr{Success predicate.}
 For a terminal state $x_T\in\mathcal{X}(E)$, the predicate $\Psi_i(E,x_T;g_i,\phi_{i,T})\in\{0,1\}$ provides an executable interpretation of $G_i$. It evaluates the achieved object relations and requested effect, yielding an unambiguous signal for verification. 
@@ -89,7 +88,7 @@ During primitive construction, the agent also proposes an initialization heurist
     = \arg\min_z
     J_i\!\left(E,\tau(z);g_i,\phi_{i,0:T}(z)\right).
 \end{equation*}
-We solve this trajectory-optimization problem with the Cross-Entropy Method (CEM)~\cite{deboer2005tutorial}, a sampling-based optimizer. We use CEM because it is gradient-free, allowing us to optimize robot motions without differentiating through the contact-rich simulation. The primitive thereby adapts its motion to the object pose, size, geometry, physical properties, and requested effect.
+We solve this trajectory-optimization problem with the Cross-Entropy Method (CEM)~\cite{deboer2005tutorial}, a sampling-based optimizer, which is gradient-free and allows us to optimize robot motions without differentiating through the contact-rich simulation. The primitive thereby adapts its motion to the object pose, size, geometry, physical properties, and requested effect.
 
 \subsection{Strategies as Primitive Composition by Constraints}
 \label{sec:relational_strategy}

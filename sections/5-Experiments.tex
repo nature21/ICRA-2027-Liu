@@ -5,33 +5,6 @@ In this section, we answer the following questions:
 (2) Does our relational program representation improve the generalization of the constructed manipulation program?
 (3) How well does \ours perform in a real-world robotic system?
 
-\subsection{Experimental Setup for Nonprehensile Manipulation}
-\xhdr{Tasks.} In this section, we evaluate \ours on 8 nonprehensile manipulation tasks in simulation. For each task, we provide a single visual human demonstration together with a language description. In all tasks, the objects are initially not graspable by the parallel gripper. The robot must therefore execute a sequence of nonprehensile manipulation primitives, such as pushing, flipping, pivoting, and toppling, to reach the target configuration. Importantly, the primitives are \textit{not} provided to the coding agent a priori. \fig{fig:experiment_visualization} illustrates the eight tasks:
-
-\xhdr{T1.} \textit{Push the object toward the corridor, switch the contact face, and push it again to store it inside the corridor.}
-
-\xhdr{T2.} \textit{Push the object toward the fixture, flip it to expose an edge, and grasp it.}
-
-\xhdr{T3.} \textit{Move the object away from the obstacles, push it toward the fixture, flip it to expose an edge, and grasp it.}
-
-\xhdr{T4.} \textit{Push the object toward the fixture, flip it, reposition it to expose an edge, and grasp it.}
-
-\xhdr{T5.} \textit{Push the object toward the fixture, flip it to align with the opening, and move it into the opening for storage.}
-
-\xhdr{T6.} \textit{Move the object to the side of the platform to expose an edge, and grasp it.}
-
-\xhdr{T7.} \textit{Pivot the box to align it with the corridor, push it toward the corridor, and then move it to store it inside the corridor.}
-
-\xhdr{T8.} \textit{Topple the object to expose an edge, then grasp it.}
-
-\xhdr{Benchmark.} We construct a simulation benchmark in MuJoCo~\cite{todorov2012mujoco} using a Franka Research 3 robot arm equipped with a compliant operational space controller. Our primary evaluation metric is \textit{generalization}. For each of the 8 tasks, we construct 50 novel test scenes that differ from the demonstration scene in object pose, appearance, size, shape, and material. We also introduce irrelevant objects to make the test scenes visually distracting. We evaluate the success rate of each method on each task, repeat each experiment for 3 trials, and report the mean and standard deviation.
-
-\xhdr{Baselines.} We compare \ours with four code-as-policy variants.
-(1) \textit{Code as Policies (CaP)}~\cite{liang2023code}: for each novel test scene, it generates a program given the demonstration, language description, and observation, without simulation feedback during code generation.
-(2) \textit{CaP + RPR}: we augment CaP with our relational program representation (RPR) and the cross-entropy method (CEM) optimizer, allowing motions to be expressed relative to scene entities.
-(3) \textit{CaP-Agent0}~\cite{fu2026cap}: We use CaP-Agent0 as our primary controlled comparison for studying the effect of program representation. In our experiments, CaP-Agent0 is provided a more favorable agentic-programming setting than RAPID: during program construction, it receives rollout feedback including ground-truth success signals, environment states, and visual observations. At evaluation time, it is also allowed to execute rollouts in each test scene and revise the program. \ours, in contrast, receives no ground-truth success signal and performs no evaluation-time rollout or program revision; its strategy is frozen before evaluation. Thus, CaP-Agent0 has strictly stronger verification access, while lacking RAPID's relational program representation.
-(4) \textit{CaP-Agent0 + SV}: we augment CaP-Agent0 with our scene variant (SV) generation, allowing the agent to further refine its program through rollouts on scene variants. This comparison controls for the benefit of variant-based verification. We do not compare with ASPIRE~\cite{lu2026aspire} on nonprehensile tasks because ASPIRE requires pre-given motion primitives. We use Codex~\cite{openai_codex} powered by GPT-5.6 Sol with high reasoning effort as the coding agent for all methods.
-
 \begin{figure}[t]
     \centering
     \includegraphics[width=\linewidth]{figures/experiment_visualization.pdf}
@@ -40,9 +13,57 @@ In this section, we answer the following questions:
     \vspace{-0.3in}
 \end{figure}
 
+\subsection{Experimental Setup for Nonprehensile Manipulation}
+\xhdr{Tasks.} In this section, we evaluate \ours on eight nonprehensile manipulation tasks in simulation. For each task, we provide a single visual human demonstration together with a language description. In all tasks, the objects are initially not graspable by the parallel gripper, so the robot must execute a sequence of nonprehensile manipulation primitives, such as pushing, flipping, pivoting, and toppling, to reach the target configuration. Importantly, the primitives are \textit{not} provided to the coding agent a priori. We provide the descriptions of the eight tasks below, and \fig{fig:experiment_visualization} illustrates the tasks:
+
+\xhdr{T1.} \textit{Push the object toward the corridor, switch the contact face, and push it again to store it inside the corridor.}
+
+\xhdr{T2.} \textit{Push the object toward the fixture, flip it to expose a graspable edge, and grasp it.}
+
+\xhdr{T3.} \textit{Move the object away from the obstacles, push it toward the fixture, flip it to expose a graspable edge, and grasp it.}
+
+\xhdr{T4.} \textit{Push the object toward the fixture, flip it, reposition it to expose a graspable edge, and grasp it.}
+
+\xhdr{T5.} \textit{Push the object toward the fixture, flip it to align with the opening, and move it into the opening for storage.}
+
+\xhdr{T6.} \textit{Move the object to the side of the platform to expose a graspable edge, and grasp it.}
+
+\xhdr{T7.} \textit{Pivot the box to align it with the corridor, push it toward the corridor, and then move it to store it inside the corridor.}
+
+\xhdr{T8.} \textit{Topple the object to expose an edge and grasp it.}
+
+\xhdr{Benchmark.} We construct a simulation benchmark in MuJoCo~\cite{todorov2012mujoco} using a Franka Research 3 robot arm equipped with a compliant operational space controller~\cite{khatib1987unified}. Our primary evaluation metric is \textit{generalization}. For each of the 8 tasks, we construct 50 novel test scenes that differ from the demonstration scene in object pose, appearance, size, shape, and material. We also introduce irrelevant objects to make the test scenes visually distracting. We evaluate each method by measuring its success rate on each task using a private success criterion hidden from the agent. We repeat each experiment for 3 trials and report the mean and standard deviation.
+
+\begin{table*}[!t]
+    \centering
+    % \caption{\textbf{Success rates on nonprehensile manipulation tasks in simulation.} We report the mean and standard deviation across three trials. \textbf{Bold} denotes the best mean or results not significantly worse according to a one-sided sign test with Holm correction ($\alpha=0.05$).}
+    \caption{\textbf{Success rates on nonprehensile manipulation tasks in simulation.} We report mean$\pm$std across three trials; best results are \textbf{bolded}.}
+    % ; \textbf{bold} denotes the best mean or results not significantly worse by a one-sided sign test over 50 paired scenes per task with Holm correction ($\alpha=0.05$).}
+    \label{tab:experiment_results}
+    \input{tables/experiment_main}
+    \vspace{-0.2in}
+\end{table*}
+\begin{table}[t]
+    \centering
+    \caption{\textbf{Experiment Results on LIBERO-Pro.}}
+    \label{tab:libero_pro_results}
+    \input{tables/experiment_libero_pro}
+    \vspace{-0.2in}
+\end{table}
+
+\xhdr{Baselines.}
+We compare six approaches along three principal axes: the closed agentic loop (\textbf{\textit{Agent}}), the relational program representation (\textbf{\textit{RPR}}), and synthesized scene variants (\textbf{\textit{SV}}). 
+\textit{1) Open-loop + Python (CaP)}: For each novel test scene, we use Code as Policies (CaP)~\cite{liang2023code} to generate a Python program conditioned on the demonstration, language description, and observation, without simulation feedback during program generation. 
+\textit{2) Open-loop + RPR (CaP + RPR)}: We augment CaP with our RPR and cross-entropy method (CEM) optimizer, enabling motions to be expressed relative to scene entities. 
+\textit{3) Agent + Python (CaP-Agent0)}: We use CaP-Agent0 from CaP-X~\cite{fu2026cap} to isolate the effect of program representation. We give CaP-Agent0 a more favorable agentic-programming setting than \ours: during program construction, it receives rollout feedback consisting of ground-truth success signals, environment states, and visual observations; at evaluation time, it may additionally execute rollouts in each test scene and revise its program. 
+\textit{4) Agent + Python + SV (CaP-Agent0 + SV)}: We further augment CaP-Agent0 with our scene-variant generation module, allowing it to refine its program on synthesized scene variants. 
+\textit{5) Agent + RPR (\ours w/o SV)}: We remove the scene-variant generation module from \ours. 
+\textit{6) Agent + RPR + SV (RAPID)}: Our full method. 
+Comparisons of 4) vs.\ 3) and 6) vs.\ 5) isolate the benefit of variant-based verification. We do not compare with ASPIRE~\cite{lu2026aspire} on nonprehensile tasks because it requires provided motion primitives. We use Codex~\cite{openai_codex} powered by GPT-5.6 Sol with high reasoning effort as the coding agent and provide the same robot control APIs for all methods.
+
 \subsection{Results and Analysis for Nonprehensile Manipulation}
 
-\xhdr{\ours successfully constructs reusable programs by closing the agentic loop from a single demonstration.} As shown in Table~\ref{tab:experiment_results}, vanilla CaP performs poorly, largely because it lacks an environment in which generated programs can be verified and refined. Notably, its performance remains poor even when it is allowed to generate a new program for each test scene. In contrast, \ours reconstructs a simulation environment from the demonstration, infers a success predicate from the demonstration and language instruction, and uses this predicate to verify and iteratively refine candidate programs in simulation, thereby closing the agentic coding loop. This enables \ours to construct a reusable program for each task that generalizes across diverse test scenes. Interestingly, guiding CaP to generate programs using our relational program representation does not improve its performance. This suggests that representation alone is insufficient: without closed-loop verification, the coding agent struggles to correctly reason about object relations and therefore fails to construct meaningful relational programs.
+\xhdr{\ours successfully constructs reusable programs by closing the agentic loop from a single demonstration.} As shown in Table~\ref{tab:experiment_results}, vanilla CaP performs poorly, largely because it lacks an environment in which generated programs can be verified and refined. Notably, its performance remains poor even when it is allowed to generate a new program for each test scene. In contrast, \ours reconstructs a simulation environment from the demonstration, infers a success predicate from the demonstration and language instruction, and uses this predicate to verify and iteratively refine candidate programs in simulation, thereby closing the agentic coding loop. This enables \ours to construct a reusable program for each task that generalizes across diverse test scenes. Interestingly, open-loop program generation with our relational program representation does not improve its performance. This suggests that representation alone is insufficient: without closed-loop verification, the coding agent struggles to correctly reason about object relations and therefore fails to construct meaningful relational programs.
 
 \xhdr{The relational program representation enhances the generalization of the strategy program.} The comparison with the two CaP-Agent0 baselines in Table~\ref{tab:experiment_results} isolates the importance of the relational program representation: even with stronger verification access, including ground-truth feedback and evaluation-time refinement, CaP-Agent0 substantially underperforms RAPID. Although CaP-Agent0 incorporates state feedback, its generated policies often use fixed world-frame offsets and predetermined timing, limiting spatial generalization and robustness to state deviations during execution. In contrast, \ours computes geometry-dependent subgoals from the state reached after each preceding phase. The gap is even larger for contact-rich, forceful behaviors such as flipping and toppling, which are naturally expressed by our relational, optimization-based motion primitives.
 
@@ -52,14 +73,6 @@ In this section, we answer the following questions:
 \xhdr{Experimental Setup.} To demonstrate the general applicability of \ours beyond non-prehensile manipulation, we evaluate it on LIBERO-Pro~\cite{zhou2025libero}, an extension of LIBERO~\cite{liu2023libero} with stronger position (Pos.) and instruction (Task.) perturbations. LIBERO-Pro predominantly features prehensile tasks, including pick-and-place and grasp-based articulated-object manipulation. We compare against two groups of baselines: (1) vision-language-action (VLA) models, including OpenVLA~\cite{kim2024openvla}, $\pi_0$~\cite{black2024pi_0}, and $\pi_{0.5}$~\cite{intelligence2025pi_}, whose results are directly taken from the LIBERO-Pro paper; and (2) code-as-policy (CaP) methods, including CaP-Agent0~\cite{fu2026cap} and ASPIRE~\cite{lu2026aspire}. For a fair comparison with CaP methods, which do not use demonstrations, \ours also receives no demonstrations and is given only the task description and a single debug scene. This setting is more restrictive than ASPIRE, which uses 15 debug scenes per task. Moreover, while CaP baselines are provided with predefined motion primitives such as grasping, placing, and transporting, \ours must discover and implement these primitives solely through exploration and iterative refinement in the debug scene.
 
 \xhdr{Results.} Table~\ref{tab:libero_pro_results} reports the results on LIBERO-Pro. \ours achieves the highest success rate on five of the six task settings, demonstrating the effectiveness of our relational program representation. On LIBERO-Goal (Pos.), \ours ranks second behind ASPIRE. This gap stems from articulated-object manipulation: primitives discovered by \ours from only a single debug scene, such as drawer opening, are less robust to spatial variation, whereas ASPIRE is provided with an \textit{interpolate segment} motion primitive that simplifies such interactions. Overall, these results demonstrate the generality of our framework beyond non-prehensile manipulation.
-
-\begin{table}[t]
-    \centering
-    \caption{\textbf{Experiment Results on LIBERO-Pro.}}
-    \label{tab:libero_pro_results}
-    \input{tables/experiment_libero_pro}
-    \vspace{-0.2in}
-\end{table}
 
 \subsection{Real-World Experiments for Nonprehensile Manipulation}
 To demonstrate that \ours can operate effectively on a real robotic system, we conduct real-world experiments on the eight nonprehensile manipulation tasks shown in \fig{fig:experiment_visualization}. As illustrated in \fig{fig:experiment_real}, our setup consists of a Franka Research 3 robot arm equipped with a parallel gripper and an Intel RealSense L515 camera for RGB-D observations. We compare \ours against CaP-Agent0~\cite{fu2026cap}. For each task, we evaluate 10 test scenes and report the success rate.
