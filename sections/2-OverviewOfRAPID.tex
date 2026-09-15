@@ -2,7 +2,7 @@
 \label{sec:overview}
 
 \xhdr{Problem Statement.}
-We consider programming a reusable strategy for quasi-static rigid-body manipulation from \textit{a single visual human demonstration} $D$ and a language description $l$. The program should solve a family of tasks $\mathcal{E}$ that share similar objectives but may vary in object appearance, geometry, pose, physical properties, and scene configuration. No manipulation primitives, explicit success or reward signals, or instantiated simulation environments are provided \textit{a priori}. Given only $(D,l)$, the agent aims to construct executable primitives $\mathcal{P}=\{P_1,\ldots,P_N\}$, which produce low-level control signals, and compose them into a strategy $\Pi$ that captures the underlying structure of the demonstration and generalizes to unseen language instructions $l^\star$ and test scenes $E^\star$ in $\mathcal{E}$:
+We consider programming a reusable strategy for quasi-static rigid-body manipulation from \textit{a single visual human demonstration} $D$ and a language description $l$. The program should solve a family of task instances $\mathcal{E}$, each comprising a scene-instruction pair $(E,l)$, with similar objectives but varying object appearance, geometry, pose, physical properties, and scene configuration. No manipulation primitives, explicit success or reward signals, or instantiated simulation environments are provided \textit{a priori}. Given only $(D,l)$, the agent aims to construct executable primitives $\mathcal{P}=\{P_1,\ldots,P_N\}$, which produce low-level control signals, and compose them into a strategy $\Pi$ that captures the demonstration's underlying structure and generalizes to unseen task instances $(E^\star,l^\star)\in\mathcal{E}$:
 \[
 (D,l)
 \mapsto
