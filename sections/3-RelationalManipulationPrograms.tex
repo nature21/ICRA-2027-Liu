@@ -144,6 +144,7 @@ For example, \fig{fig:program} shows a \textit{press move} following a \textit{f
 \subsection{Strategy Instantiation in Novel Scenes}
 \label{sec:novel_instantiation}
 
-To deploy a strategy in a novel scene, we only need to provide a semantic binding. Given a novel scene $E^\star$ and instruction $l^\star$, RAPID uses a coding agent to rapidly generate a semantic binding $b^\star \in\operatorname{Bind}_{E^\star}(\mathbf{r}_\Pi,\Gamma_\Pi)$ that assigns scene entities to the semantic roles exposed by the strategy interface. Since this step only associates the exposed semantic roles with scene entities, it is lightweight and incurs little deployment overhead. At phase $k$, the strategy derives the primitive binding and effect argument automatically. 
+To deploy a strategy in a novel scene, we only need to provide a semantic binding. Given a novel scene $E^\star$ and instruction $l^\star$, \ours uses a coding agent to rapidly generate a semantic binding $b^\star \in\operatorname{Bind}_{E^\star}(\mathbf{r}_\Pi,\Gamma_\Pi)$ that assigns scene entities to the semantic roles exposed by the strategy interface. 
+Since this step only associates the exposed semantic roles with scene entities, it is lightweight and incurs little deployment overhead (a few seconds). At phase $k$, the strategy derives the primitive binding and effect argument automatically. 
 
 Throughout this process, the strategy program $\Pi$ and the referenced primitives remain frozen. Generalization therefore arises from the object-centric relational program representation, together with the adaptation of trajectory optimization to the geometry and physical properties of the new scene.
