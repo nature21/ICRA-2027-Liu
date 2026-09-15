@@ -28,3 +28,6 @@ _minted-*/
 .DS_Store
 AGENTS.md
 draw_figures
+/analysis
+/tmp
+/.tmp

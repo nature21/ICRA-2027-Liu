@@ -1,4 +1,4 @@
-\section{Agentic Programming from Demonstration}
+\section{Agentic Programming from a Demonstration}
 \label{sec:agentic_programming}
 
 {
@@ -57,10 +57,10 @@ We now describe how \ours constructs and verifies the programs defined in Sec.~\
 \subsection{Reconstructing Interactive Environments}
 \label{sec:loop_ingredients}
 
-\xhdr{Interactive environment.}
-To verify a manipulation program, RAPID reconstructs an interactive simulation environment from the initial RGB-D frame of the demonstration. We first use a vision-language model (VLM) to identify the objects in the scene, assign them with semantic labels, and estimate their physical properties. Then, for each semantic name, we utilize SAM~3~\cite{carion2026sam} to get a segmentation mask. The RGB-D frame and the mask are then fed into SAM~3D~\cite{chen2026sam} to reconstruct a complete mesh. Finally, we use FoundationPose~\cite{wen2024foundationpose} to register each mesh to the RGB-D frame, and assemble the reconstructed objects and robot model in MuJoCo~\cite{todorov2012mujoco}. The resulting environment preserves the scene entities, geometry, and spatial relations needed to execute the candidate program and evaluate its success predicates.
+\xhdr{Interactive Environment.}
+To verify a manipulation program, RAPID reconstructs an interactive simulation environment from the initial RGB-D frame of the demonstration. We first use a vision-language model (VLM) to identify the objects in the scene, assign semantic labels to them, and estimate their physical properties. Then, for each semantic name, we utilize SAM~3~\cite{carion2026sam} to get a segmentation mask. The RGB-D frame and the mask are then fed into SAM~3D~\cite{chen2026sam} to reconstruct a complete mesh. Finally, we use FoundationPose~\cite{wen2024foundationpose} to register each mesh to the RGB-D frame and assemble the reconstructed objects and robot model in MuJoCo~\cite{todorov2012mujoco}. The resulting environment preserves the scene entities, geometry, and spatial relations needed to execute the candidate program and evaluate its success predicates.
 
-\xhdr{Feasible scene variants.}
+\xhdr{Feasible Scene Variants.}
 To construct variants of the demonstrated scene, RAPID uses a task-agnostic variation sampler to randomize object appearances, sizes, poses, and physical parameters such as mass, friction, and elasticity. However, the randomly sampled scenes might not be feasible for a certain primitive or strategy. Therefore, we ask the coding agent to write a filter for each primitive or strategy that accepts only variants preserving the declared roles and relations, task meaning, and physical feasibility.
 
 \subsection{Primitive Construction}

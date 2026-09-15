@@ -2965,7 +2965,7 @@ Using a default centering column instead}%
 % : = \: (med)         0.22222em ( 4/18 em)
 % ; = \; (large)       0.27778em ( 5/18 em)
 % ' = \quad            1em
-% " = \qquad           2em
+% " = \quad           2em
 % . = 0.5\arraycolsep
 % / = \arraycolsep
 % ? = 2\arraycolsep

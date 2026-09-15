@@ -1,8 +1,8 @@
 \section{Overview of RAPID}
 \label{sec:overview}
 
-\xhdr{Problem statement.}
-We consider programming a reusable strategy for quasi-static rigid-body manipulation from \textit{a single visual human demonstration} $D$ and a language description $l$. The program should solve a family of tasks $\mathcal{E}$ that share similar objectives but may vary in object appearance, geometry, pose, physical properties, and scene configuration. No manipulation primitives, explicit success or reward signals, or instantiated simulation environments are provided \textit{a priori}. Given only $(D,l)$, the agent aims to construct executable primitives $\mathcal{P}=\{P_1,\ldots,P_N\}$, which produces low-level control signals, and compose them into a strategy $\Pi$ that captures the underlying structure of the demonstration and generalizes to unseen language instructions $l^\star$ and test scenes $E^\star$ in $\mathcal{E}$:
+\xhdr{Problem Statement.}
+We consider programming a reusable strategy for quasi-static rigid-body manipulation from \textit{a single visual human demonstration} $D$ and a language description $l$. The program should solve a family of tasks $\mathcal{E}$ that share similar objectives but may vary in object appearance, geometry, pose, physical properties, and scene configuration. No manipulation primitives, explicit success or reward signals, or instantiated simulation environments are provided \textit{a priori}. Given only $(D,l)$, the agent aims to construct executable primitives $\mathcal{P}=\{P_1,\ldots,P_N\}$, which produce low-level control signals, and compose them into a strategy $\Pi$ that captures the underlying structure of the demonstration and generalizes to unseen language instructions $l^\star$ and test scenes $E^\star$ in $\mathcal{E}$:
 \[
 (D,l)
 \mapsto
@@ -11,18 +11,11 @@ We consider programming a reusable strategy for quasi-static rigid-body manipula
 \Pi(E^\star, l^\star;\mathcal{P}) \text{ succeeds for } (E^\star, l^\star) \in \mathcal{E}.
 \]
 
-\xhdr{Program representation.}
-We introduce a \textit{relational program representation} that enables strategies constructed by the agent to generalize across different scenes. \ours represents each primitive as a geometry- and physics-aware local trajectory optimization program that achieves an object-level effect. A strategy then composes these primitives through relational constraints that specify the desired effect of each primitive just in time. We detail this representation in Sec.~\ref{sec:relational_programs}.
+\xhdr{Program Representation.}
+We introduce an \textit{object-centric relational program representation} that enables strategies constructed by the agent to generalize across different scenes. \ours represents each primitive as a geometry- and physics-aware local trajectory-optimization program that achieves an object-level effect. A strategy then composes these primitives through relational constraints that specify the desired effect of each primitive. We detail this representation in Sec.~\ref{sec:relational_programs}.
 
-\xhdr{Strategy construction.}
+\xhdr{Strategy Construction.}
 As shown in \fig{fig:method_overview}, RAPID closes the agentic coding loop by deriving task specifications, manipulation primitives, and verification environments from $(D,l)$. It segments the demonstration into several phases, infers a subgoal and success predicate for each phase, and performs real-to-sim reconstruction to obtain interactive simulation environments. RAPID further synthesizes feasible scene variants for additional verification. For each phase, the coding agent generates a primitive and iteratively executes, verifies, and revises it across the reconstructed environment and its variants. RAPID then infers the overall task goal and success predicate, composes the primitives into a strategy, and refines the composition through the same loop. We describe this construction and verification process in Sec.~\ref{sec:agentic_programming}.
 
-\xhdr{Strategy deployment.}
+\xhdr{Strategy Deployment.}
 At deployment, given an RGB-D observation of a novel scene and a language instruction, RAPID reconstructs the scene in simulation, instantiates the strategy in the reconstructed scene, and executes the resulting trajectory on the robot. Lightweight semantic binding assigns scene objects to the semantic roles in the strategy, while the strategy and primitives themselves remain unchanged.
-
-% \xhdr{Program representation.}
-% We introduce \textit{relational program representation} to make constructed strategies reusable across scenes. \ours represents each primitive as a geometry- and physics-aware local trajectory optimization program that achieves a object-level effect. A strategy then connects primitives through relational constraints that specify what each primitive should accomplish in the current scene.  We provide the details of the representation in Sec.~\ref{sec:relational_programs}.
-
-% \xhdr{Strategy construction.} As shown in \fig{fig:method_overview}, RAPID closes the agentic coding loop by deriving task specifications, manipulation primitives, and verification environments from $(D,l)$. It partitions the demonstration into interaction phases, infers a subgoal and success predicate for each phase, and reconstructs the corresponding interactive simulation environments. To improve generalization, RAPID also synthesizes feasible scene variants for additional verification. For each phase, the coding agent generates a primitive to achieve its subgoal and iteratively executes, verifies, and revises it in the corresponding environment and its variants. It then infers the overall task goal and success predicate, composes the verified primitives into a strategy, and refines the composition through the same loop.  We describe program construction and verification in Sec.~\ref{sec:agentic_programming}.
-
-% \xhdr{Strategy instantiation.} At deployment, given an RGB-D observation of a novel scene and a language instruction, RAPID reconstructs the scene in simulation, instantiates and runs the strategy program in this scene, and executes the output trajectory on the robot. To deploy the program in a new scene, we use lightweight semantic binding to match scene objects to program roles. The strategy and primitives themselves remain unchanged. 

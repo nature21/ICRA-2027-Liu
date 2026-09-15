@@ -1,46 +1,50 @@
-\section{Relational Manipulation Programs}
+\section{Object-Centric Relational Programs}
 \label{sec:relational_programs}
 
-We now define relational primitives, their composition into task-level strategies, and their instantiation in novel scenes.
+We now define our object-centric relational program representation: primitives (Sec.~\ref{sec:relational_primitives}), their composition into task-level strategies (Sec.~\ref{sec:relational_strategy}), and strategy instantiation in novel scenes (Sec.~\ref{sec:novel_instantiation}).
 
 \subsection{Primitives as Local Trajectory-Optimization Programs}
 \label{sec:relational_primitives}
-A primitive is a reusable behavior for realizing an object-level motion effect, such as pushing for a displacement or flipping for an angle. We represent a primitive as a local relational trajectory-optimization program
+A primitive is a reusable behavior for realizing an object-level motion effect, such as pushing an object by a displacement or flipping an object by an angle. We represent a primitive as a local relational trajectory-optimization program
 \begin{equation*}
     P_i=(G_i,C_i,\Psi_i,\rho_i,J_i)\in\mathcal{P}.
 \end{equation*}
 Here, $G_i$ is a semantic, object-centric description of the intended effect; $C_i$ is the relational interface; $\Psi_i$ is the verifiable success condition; $\rho_i$ is the geometry resolver; and $J_i$ is the optimization cost. Together, these components specify how the primitive is instantiated, optimized, and verified in a specific scene. A primitive is therefore neither a fixed trajectory nor a black-box policy. Table~\ref{tab:flip_primitive} illustrates each component for flipping an object against a fixture.
 
 \begin{table}[t]
-    \caption{\textbf{Local trajectory optimization program for the primitive \textit{flip}.}}
+    \caption{\textbf{Local trajectory-optimization program for the primitive \textit{flip}.}}
     \label{tab:flip_primitive}
-    \begin{adjustbox}{width=\columnwidth}
     \centering
-    \setlength{\tabcolsep}{2pt}
-    \begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.37\columnwidth}
-                        >{\raggedright\arraybackslash}p{1.13\columnwidth}@{}}
+    \begin{adjustbox}{width=\columnwidth}
+    \setlength{\tabcolsep}{3pt}
+    \begin{tabular}{>{\raggedright\arraybackslash}m{0.35\columnwidth}
+                        >{\raggedright\arraybackslash}m{1.15\columnwidth}}
         \toprule
         \textbf{Component} & \textbf{Content} \\
         \midrule
         Semantic goal $G_i$
-            & Flip the target object against a fixture for a specific angle. \\
+            & Flip the target object against a fixture by a specific angle. \\
+        \addlinespace[2pt]
         \rowcolor{black!5}
-        Relational interface $C_i$
-            & Semantic roles $\mathbf{r}_i$: target object, support plane, fixture, and pusher.
-              Relations $\Gamma_i$: the object rests on the support plane, and the fixture
-              exposes a reachable vertical face. Effect parameter $\mathbf{q}_i$: flipping angle.\\
+        Relational interface \newline $C_i=(\mathbf{r}_i,\Gamma_i,\mathbf{q}_i)$
+            & Semantic roles $\mathbf{r}_i$: (target object, support plane, fixture, manipulator). \newline
+            Relations $\Gamma_i$: the object rests on the support plane, and the fixture exposes a vertical face oriented toward the target object and reachable by the manipulator. \newline 
+            Effect parameter $\mathbf{q}_i$: the requested flipping angle.\\
+        \addlinespace[2pt]
         Success predicate $\Psi_i$
             & Check that the achieved rotation matches the flipping angle and that the
-              target remains supported, near the fixture, and settled. \\
+              target object remains supported, near the fixture, and settled. \\
+        \addlinespace[2pt]
         \rowcolor{black!5}
         Geometry resolver $\rho_i$
-            & At each rollout state, resolve the support plane, the vertical face of the fixture, the flipping axis, and dimensions of the target object. \\
+            & Resolve the support plane, the vertical face of the fixture, the flipping axis, and the dimensions of the target object at each step. \\
+        \addlinespace[2pt]
         Final cost $J_i^{\mathrm{f}}$
-            & Penalize terminal rotation error relative to the flipping angle, support
-              and fixture gaps, and terminal velocity. \\
+            & Penalize terminal rotation error relative to the flipping angle, the gap between the fixture and the target object, and terminal velocity. \\
+        \addlinespace[2pt]
         \rowcolor{black!5}
         Progress cost $J_i^{\mathrm{p}}$
-            & Encourage rotation and pusher proximity while discouraging
+            & Encourage rotation and manipulator proximity while discouraging
               backtracking and irregular motion. \\
         \bottomrule
     \end{tabular}
@@ -48,30 +52,32 @@ Here, $G_i$ is a semantic, object-centric description of the intended effect; $C
     \vspace{-0.2in}
 \end{table}
 
-\xhdr{Relational interface.}
+\xhdr{Relational Interface.}
 We write the primitive interface as
 \begin{equation*}
     C_i=(\mathbf{r}_i,\Gamma_i,\mathbf{q}_i).
 \end{equation*}
-Here, $\mathbf{r}_i$ declares the semantic roles involved in the primtive, $\mathbf{q}_i$ declares the effect parameter, and $\Gamma_i$ specifies the relations among the roles. For example, for the primitive \textit{flip} in Table~\ref{tab:flip_primitive}, $\mathbf{r}_i$ declares the relevant semantic roles \textit{(target object, support plane, fixture, pusher)}, and the effect parameter $\mathbf{q}_i$ is the requested flipping angle. To apply a primitive in a scene, an invocation supplies runtime arguments $(b_i,g_i)$ satisfying
+Here, $\mathbf{r}_i$ declares the semantic roles involved in the primitive; for example, for the primitive \textit{flip} in Table~\ref{tab:flip_primitive}, these roles are \textit{(target object, support plane, fixture, manipulator)}. $\Gamma_i$ specifies the relations among these roles; for \textit{flip}, it encodes that the target object rests on the support plane and that the fixture exposes a vertical face oriented toward the target object and reachable by the manipulator. Finally, $\mathbf{q}_i$ declares the effect parameter; for \textit{flip}, it is the requested flipping angle.
+
+To apply a primitive in a scene, an invocation supplies runtime arguments $(b_i,g_i)$ satisfying
 \begin{equation*}
     b_i\in\operatorname{Bind}_E(\mathbf{r}_i,\Gamma_i),
-    \qquad
-    g_i\in\operatorname{Val}(\mathbf{q}_i).
+    \quad
+    g_i\in\operatorname{Val}(\mathbf{q}_i),
 \end{equation*}
-Here, $\operatorname{Bind}_E(\mathbf{r}_i,\Gamma_i)$ denotes the type-compatible assignments of the objects in the scene $E$ to $\mathbf{r}_i$ that satisfy $\Gamma_i$, and $\operatorname{Val}(\mathbf{q}_i)$ denotes the values matching the types declared by $\mathbf{q}_i$. Scene-dependent geometry remains internal to the primitive and is resolved by $\rho_i$ at execution time.
+where $\operatorname{Bind}_E(\mathbf{r}_i,\Gamma_i)$ denotes the type-compatible assignments of the objects in the scene $E$ to $\mathbf{r}_i$ that satisfy $\Gamma_i$, and $\operatorname{Val}(\mathbf{q}_i)$ denotes the values matching the types declared by $\mathbf{q}_i$. Scene-dependent geometry remains internal to the primitive and is resolved by $\rho_i$ at execution time.
 
-\xhdr{Geometry resolver.}
+\xhdr{Geometry Resolver.}
 Let $\mathcal{X}(E)$ be the state space of environment $E$. For the state $x_t\in\mathcal{X}(E)$ at time step $t$, the geometry resolver $\rho_i$ computes the geometric features $\phi_{i,t}$: 
 \begin{equation*}
-    \phi_{i,t} = \rho_i(E,x_t,b_i), \qquad t=0,\ldots,T.
+    \phi_{i,t} = \rho_i(E,x_t,b_i), \quad t=0,\ldots,T.
 \end{equation*}
 For example, for the primitive \textit{flip} in Table~\ref{tab:flip_primitive}, the agent would write detectors for the support plane, the vertical face of the fixture, the flipping axis, etc. 
 
-\xhdr{Success predicate.}
-For a terminal state $x_T\in\mathcal{X}(E)$, the predicate $\Psi_i(E,x_T;g_i,\phi_{i,T})\in\{0,1\}$ provides an executable interpretation of $G_i$. It evaluates the achieved object relations and requested effect, yielding an unambiguous signal for verification. 
+\xhdr{Success Predicate.}
+For a terminal state $x_T\in\mathcal{X}(E)$, the predicate $\Psi_i(E,x_T;g_i,\phi_{i,T})\in\{0,1\}$ provides an executable version of $G_i$. It checks the achieved object relations and requested effect, yielding an unambiguous signal for verification. 
 
-\xhdr{Optimization cost.}
+\xhdr{Optimization Cost.}
 For a simulated trajectory $\tau=(x_0,\ldots,x_T)$ in environment $E$, where $x_t\in\mathcal{X}(E)$, the primitive cost is
 \begin{equation*}
     \begin{aligned}
@@ -88,7 +94,7 @@ During primitive construction, the agent also proposes an initialization heurist
     = \arg\min_z
     J_i\!\left(E,\tau(z);g_i,\phi_{i,0:T}(z)\right).
 \end{equation*}
-We solve this trajectory-optimization problem with the Cross-Entropy Method (CEM)~\cite{deboer2005tutorial}, a sampling-based optimizer, which is gradient-free and allows us to optimize robot motions without differentiating through the contact-rich simulation. The primitive thereby adapts its motion to the object pose, size, geometry, physical properties, and requested effect.
+We solve this trajectory-optimization problem with the cross-entropy method (CEM)~\cite{deboer2005tutorial}, a gradient-free sampling-based optimizer that allows us to optimize robot motions without differentiating through the contact-rich simulation. The primitive thereby adapts its motion to the object pose, size, geometry, physical properties, and requested effect.
 
 \subsection{Strategies as Primitive Composition by Constraints}
 \label{sec:relational_strategy}
@@ -109,12 +115,12 @@ After the primitives $\mathcal{P}$ are constructed, where each $P_i \in \mathcal
 \end{equation*}
 where $G_\Pi$ describes the overall task goal and $\Psi_\Pi$ evaluates its final outcome.
 
-\xhdr{Strategy interface.}
+\xhdr{Strategy Interface.}
 A strategy exposes semantic roles and their required relations,
 \begin{equation*}
     C_\Pi=(\mathbf{r}_\Pi,\Gamma_\Pi).
 \end{equation*}
-To invoke the strategy, a role binding $b\in\operatorname{Bind}_E(\mathbf{r}_\Pi,\Gamma_\Pi)$ assigns an entity to each strategy role while satisfying $\Gamma_\Pi$. Primitive effect parameters are not exposed through $C_\Pi$; instead, they are derived inside the strategy during execution.
+Invoking the strategy requires a semantic role binding $b\in\operatorname{Bind}_E(\mathbf{r}_\Pi,\Gamma_\Pi)$ that assigns an entity to each strategy role while satisfying $\Gamma_\Pi$. Primitive effect parameters are not exposed through $C_\Pi$; instead, they are derived inside the strategy during execution.
 
 \xhdr{Primitive Composition by Constraints.}
 A strategy consists of $K$ phases, each represented by a tuple $(P_{i_k},m_k,c_k)$, where $P_{i_k} \in \mathcal{P}$ is a primitive, $m_k$ is a role map, and $c_k$ is a connecting constraint. For the invoked primitive $P_{i_k}$, $m_k$ produces a role binding $b_k$ that fills the role declarations $\mathbf{r}_{i_k}$, while $c_k$ produces an effect argument $g_k$ that fills the parameter declarations $\mathbf{q}_{i_k}$. The connecting constraint declaratively specifies how phase $k$ depends on the outcome of phase $k-1$ and is evaluated just in time at the beginning of phase $k$:
@@ -133,11 +139,11 @@ where $s_{k-1}\in\mathcal{X}(E)$ denotes the environment state after the executi
 \end{equation*}
 Here, $\operatorname{Exec}$ solves the local trajectory-optimization problem of $P_{i_k}$ and executes the optimized trajectory.
 
-For example, \fig{fig:program} shows a \textit{press move} following a \textit{flip}. The role map $m_k$ maps the strategy's target object, supporting surface, and tool roles to the corresponding roles of the \textit{press-move} primitive, producing $b_k$. The connecting constraint $c_k$ determines the goal position from the relation between the brown obstacle and the white fixture. Using the target object's current position in the post-flip state $s_{k-1}$, it computes the displacement toward this goal along the fixture axis, producing the effect argument $g_k$ for the \textit{press move} primitive.
+For example, \fig{fig:program} shows a \textit{press move} following a \textit{flip}. The role map $m_k$ maps the strategy's target object, supporting surface, and tool roles to the corresponding roles of the \textit{press move} primitive, producing $b_k$. The connecting constraint $c_k$ determines the goal position from the relation between the brown obstacle and the white fixture. Using the target object's current position in the post-flip state $s_{k-1}$, it computes the displacement toward this goal along the fixture axis, producing the effect argument $g_k$ for the \textit{press move} primitive.
 
 \subsection{Strategy Instantiation in Novel Scenes}
 \label{sec:novel_instantiation}
 
-To deploy a strategy in a novel scene, we only need to provide a semantic binding. Given a novel scene $E^\star$ and instruction $l^\star$, RAPID uses a coding agent to rapidly generate a semantic binding $b^\star \in\operatorname{Bind}_{E^\star}(\mathbf{r}_\Pi,\Gamma_\Pi)$ that assigns scene entities to the semantic roles exposed by the strategy interface.Since this step only associates the exposed semantic roles with scene entities, it is lightweight and incurs little deployment overhead. At phase $k$, the strategy derives the primitive binding and effect argument automatically. 
+To deploy a strategy in a novel scene, we only need to provide a semantic binding. Given a novel scene $E^\star$ and instruction $l^\star$, RAPID uses a coding agent to rapidly generate a semantic binding $b^\star \in\operatorname{Bind}_{E^\star}(\mathbf{r}_\Pi,\Gamma_\Pi)$ that assigns scene entities to the semantic roles exposed by the strategy interface. Since this step only associates the exposed semantic roles with scene entities, it is lightweight and incurs little deployment overhead. At phase $k$, the strategy derives the primitive binding and effect argument automatically. 
 
-Throughout this process, the strategy program $\Pi$ and the referenced primitives remain frozen. Generalization therefore arises from the relational program representation, together with the adaptation of trajectory optimization to the geometry and physical properties of the new scene.
+Throughout this process, the strategy program $\Pi$ and the referenced primitives remain frozen. Generalization therefore arises from the object-centric relational program representation, together with the adaptation of trajectory optimization to the geometry and physical properties of the new scene.
