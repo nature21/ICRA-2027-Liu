@@ -41,7 +41,15 @@
 }
 
 
-% \author{Anonymous Authors}
+\author{Yuyao Liu$^{1,2}$, Jiayuan Mao$^{3,\dagger}$, David Hsu$^{2,4,\dagger}$,
+Leslie Pack Kaelbling$^{1,\dagger}$, and Tom\'as Lozano-P\'erez$^{1,\dagger}$%
+\thanks{$^{\dagger}$ Equally advising.}%
+\thanks{Corresponding author: Yuyao Liu (\texttt{yuyaoliu@mit.edu}).}%
+\\[0.5ex]
+{\normalsize $^{1}$Massachusetts Institute of Technology \quad
+$^{2}$National University of Singapore}\\
+{\normalsize $^{3}$University of Pennsylvania \quad $^{4}$NVIDIA}
+}
 
 
 \begin{document}
@@ -53,7 +61,7 @@
 
 \begin{abstract}
 
-Coding agents have demonstrated enormous success in solving complex programming problems. To leverage their potential for robot systems, this work introduces \textbf{Robot Agentic Programming from Demonstrations (\ours)}, which automatically generates, verifies, and refines robot programs, given a \textrm{single visual human demonstration}. The iterative agentic loop of code refinement requires several key ingredients: (i) a testable task specification, (ii) action primitives for robot execution, and (iii) an interactive environment for program execution and verification. \ours infers all three from the demonstration automatically. To make the resulting program reusable beyond the demonstration setting, \ours uses an \textit{object-centric relational program representation} that focuses on the underlying structure of the demonstrated strategy rather than the specific motion \textit{per se}: it expresses the action primitives as trajectory-optimization programs that realize object-level motion effects, while composing them through relational constraints that capture scene-specific geometry at run time.  We evaluated \ours in simulation on eight challenging contact-rich nonprehensile manipulation tasks as well as general prehensile manipulation tasks in the LIBERO-Pro benchmark. We also successfully deployed it on a real Franka arm and evaluated on all eight nonprehensile tasks. In all experiments, \ours demonstrated strong performance, with generalization over object pose, shape, material, and environment. 
+Coding agents have demonstrated enormous success in solving complex programming problems. To leverage their potential for robot systems, this work introduces \textbf{Robot Agentic Programming from Demonstrations (\ours)}, which automatically generates, verifies, and refines robot programs, given a \textrm{single visual human demonstration}. The iterative agentic loop of code refinement requires several key ingredients: (i) a testable task specification, (ii) action primitives for robot execution, and (iii) an interactive environment for program execution and verification. \ours infers all three from the demonstration automatically. To make the resulting program reusable beyond the demonstration setting, \ours uses an \textit{object-centric relational program representation} that focuses on the underlying structure of the demonstrated strategy rather than the specific motion \textit{per se}: it expresses the action primitives as trajectory-optimization programs that realize object-level motion effects, while composing them through relational constraints that capture scene-specific geometry at run time.  We evaluated \ours in simulation on eight challenging contact-rich nonprehensile manipulation tasks as well as general prehensile manipulation tasks in the LIBERO-Pro benchmark. We also successfully deployed it on a real Franka arm and evaluated on all eight nonprehensile tasks. In all experiments, \ours demonstrated strong performance, with generalization over object pose, shape, material, and environment. Website: \url{https://yuyaoliu.me/projects/rapid}.
 \end{abstract}
 
 \input{sections/1-Introduction}
@@ -65,8 +73,8 @@ Coding agents have demonstrated enormous success in solving complex programming 
 \input{sections/7-Conclusion}
 % \input{sections/8-Appendix}
 
-\section*{ACKNOWLEDGMENT}
-\xhdr{AI Disclosure.} The authors used OpenAI Codex~\cite{openai_codex} to assist with software implementation and debugging.
+% \section*{ACKNOWLEDGMENT}
+% \xhdr{AI Disclosure.} The authors used OpenAI Codex~\cite{openai_codex} to assist with software implementation and debugging.
 
 % Enable the bibliography after adding the first citation.
 % \bibliographystyle{ieeetr}
